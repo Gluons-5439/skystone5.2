@@ -14,6 +14,10 @@ public class AutonomousTools {
     final int TICKS_PER_REV = 1220;
     final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
 
+    static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    static final String LABEL_STONE = "Stone";
+    static final String LABEL_SKYSTONE = "Skystone";
+
     public VuforiaLocalizer vuforia;
     public TFObjectDetector tfod;
 
@@ -126,7 +130,7 @@ public class AutonomousTools {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforia);
-        // this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+        this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
         tfodParameters.minimumConfidence = 0.6;
     }
 

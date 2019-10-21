@@ -8,13 +8,10 @@ public class RedAuto extends LinearOpMode {
 
     Hardware hardware = new Hardware();
     AutonomousTools auto = new AutonomousTools();
-//    ArrayList<DcMotor> wheels = new ArrayList<>();
 
     public void runOpMode() throws InterruptedException {
-//        wheels.add(hardware.frontLeft);
-//        wheels.add(hardware.frontRight);
-//        wheels.add(hardware.backLeft);
-//        wheels.add(hardware.backRight);
+
+        auto.initTfod(hardwareMap);
 
         hardware.init(hardwareMap, true);
         waitForStart();
