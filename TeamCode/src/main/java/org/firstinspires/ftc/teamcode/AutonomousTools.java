@@ -8,6 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+
 public class AutonomousTools {
     final double WHEEL_RADIUS = 2;  // Radius in inches
     final double AUTO_POWER = 1;
@@ -29,23 +31,55 @@ public class AutonomousTools {
     // New encoder stuff!
     // ================================================================
 
+    public enum MoveStyle {
+        STRAIGHT_FORWARD,
+        STRAIGHT_BACK,
+        STRAFE_RIGHT,
+        STRAFE_LEFT,
+        POINT_TURN_LEFT,
+        POINT_TURN_RIGHT
+    }
+
     /**
      * Public method to move the robot using encoder position.
      *
      * @param inches The distance to travel in inches.
      * @param h The Hardware object that holds the motors.
+     * @param moveStyle An enum determining the style of movement.
      */
-    public void moveDistance(int inches, Hardware h) {
+    public void move(int inches, Hardware h, MoveStyle moveStyle) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
 
-        moveDistInTicks(ticks, h);
+        moveDistInTicks(ticks, h, moveStyle);
     }
 
-    private void moveDistInTicks(int ticks, Hardware h) {
-        startMotor(h.frontLeft, ticks);
-        startMotor(h.frontRight, ticks);
-        startMotor(h.backLeft, ticks);
-        startMotor(h.backRight, ticks);
+    private void moveDistInTicks(int ticks, Hardware h, MoveStyle moveStyle) {
+        boolean motorDirs[] = new boolean[4];
+        switch (moveStyle) {
+            case STRAIGHT_FORWARD:
+                motorDirs[0] = false; motorDirs[1] = false; motorDirs[2] = true; motorDirs[3] = true;
+                break;
+            case STRAIGHT_BACK:
+                motorDirs[0] = true; motorDirs[1] = true; motorDirs[2] = false; motorDirs[3] = false;
+                break;
+            case STRAFE_RIGHT:
+                motorDirs[0] = true; motorDirs[1] = false; motorDirs[2] = true; motorDirs[3] = false;
+                break;
+            case STRAFE_LEFT:
+                motorDirs[0] = false; motorDirs[1] = true; motorDirs[2] = false; motorDirs[3] = true;
+                break;
+            case POINT_TURN_RIGHT:
+                motorDirs[0] = false; motorDirs[1] = true; motorDirs[2] = true; motorDirs[3] = false;
+                break;
+            case POINT_TURN_LEFT:
+                motorDirs[0] = true; motorDirs[1] = false; motorDirs[2] = false; motorDirs[3] = true;
+                break;
+        }
+
+        startMotor(h.frontLeft, ticks, motorDirs[0]);
+        startMotor(h.frontRight, ticks, motorDirs[1]);
+        startMotor(h.backLeft, ticks, motorDirs[2]);
+        startMotor(h.backRight, ticks, motorDirs[3]);
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy());
 
@@ -55,7 +89,7 @@ public class AutonomousTools {
         h.backRight.setPower(0);
     }
 
-    private void startMotor(DcMotor motor, int ticks) {
+    private void startMotor(DcMotor motor, int ticks, boolean isReversed) {
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setTargetPosition(ticks);
         motor.setPower(AUTO_POWER);
@@ -65,14 +99,21 @@ public class AutonomousTools {
     // If we are to use encoders, we might be able to change these movement methods to be better
     // ================================================================
 
-    private void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware hulk) {
+    public void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware hulk) {
         hulk.frontLeft.setPower(speed * fl);
         hulk.frontRight.setPower(speed * fr);
         hulk.backLeft.setPower(speed * bl);
         hulk.backRight.setPower(speed * br);
     }
 
-    private void setMotorPower(Hardware hulk) {
+    public void setMotorPower(double speed, Hardware hulk) {
+        hulk.frontLeft.setPower(speed);
+        hulk.frontRight.setPower(speed);
+        hulk.backLeft.setPower(speed);
+        hulk.backRight.setPower(speed);
+    }
+
+    public void setMotorPower(Hardware hulk) {
         hulk.frontLeft.setPower(0);
         hulk.frontRight.setPower(0);
         hulk.backLeft.setPower(0);
@@ -116,6 +157,11 @@ public class AutonomousTools {
         setMotorPower(hulk);
     }
 
+    public void initSensors(HardwareMap h) {
+        initVuforia();
+        initTfod(h);
+    }
+
     public void initVuforia() {
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
@@ -126,7 +172,7 @@ public class AutonomousTools {
 
     }
 
-    public void initTfod(HardwareMap hardwareMap) {
+    private void initTfod(HardwareMap hardwareMap) {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforia);

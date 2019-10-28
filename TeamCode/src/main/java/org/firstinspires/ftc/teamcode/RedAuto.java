@@ -3,7 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "Crater", group = "Autonomous")
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import java.util.List;
+
+@Autonomous(name = "RedAuto", group = "Autonomous")
 public class RedAuto extends LinearOpMode {
 
     Hardware hardware = new Hardware();
@@ -11,16 +15,25 @@ public class RedAuto extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
 
-        auto.initTfod(hardwareMap);
+        auto.initSensors(hardwareMap);
 
         hardware.init(hardwareMap, true);
         waitForStart();
         auto.tfod.activate();
 
         if (auto.tfod != null) {
-            auto.moveDistance(12, hardware);
+            auto.move(12, hardware, AutonomousTools.MoveStyle.STRAIGHT_FORWARD);
+            Thread.sleep(2000);
 
-
+            auto.setMotorPower(0.1, hardware);
+            while (opModeIsActive()) {
+                List<Recognition> updatedRecognitions = auto.tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    auto.setMotorPower(hardware);
+                    telemetry.addData("Found: ", updatedRecognitions.get(0).getLabel());
+                    break;
+                }
+            }
         }
     }
 }

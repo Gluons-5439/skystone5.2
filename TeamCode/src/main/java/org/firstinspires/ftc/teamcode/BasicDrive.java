@@ -19,9 +19,9 @@ public class BasicDrive extends LinearOpMode {
             // DRIVE ====================================================
             // Wonky mecanum wheel code-- don't need to touch it 'cos it works, that's all that we have to care about.
 
-            double forward = Math.abs(gamepad1.left_stick_y) > 0.1 ? gamepad1.left_stick_y * maxPower : 0;
-            double clockwise = Math.abs(gamepad1.left_stick_x) > 0.1 ? -gamepad1.left_stick_x * maxPower : 0;
-            double right = Math.abs(gamepad1.right_stick_x) > 0.1 ? gamepad1.right_stick_x * maxPower : 0;
+            double forward = Math.abs(gamepad1.left_stick_y) > 0.1 ? gamepad1.left_stick_y : 0;
+            double clockwise = Math.abs(gamepad1.left_stick_x) > 0.1 ? -gamepad1.left_stick_x : 0;
+            double right = Math.abs(gamepad1.right_stick_x) > 0.1 ? gamepad1.right_stick_x : 0;
             //Math for drive relative to theta
             clockwise *= -0.5;
 
