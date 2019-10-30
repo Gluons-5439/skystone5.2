@@ -22,7 +22,7 @@ public class RedAuto extends LinearOpMode {
         auto.tfod.activate();
 
         if (auto.tfod != null) {
-            auto.move(12, hardware, AutonomousTools.MoveStyle.STRAIGHT_FORWARD);
+            auto.moveStraightForward(12, hardware);
             Thread.sleep(2000);
 
             auto.setMotorPower(0.1, hardware);

@@ -40,21 +40,95 @@ public class AutonomousTools {
         POINT_TURN_RIGHT
     }
 
+//    /**
+//     * Public method to move the robot using encoder position.
+//     *
+//     * @param inches The distance to travel in inches.
+//     * @param h The Hardware object that holds the motors.
+//     * @param moveStyle An enum determining the style of movement.
+//     */
+//    public void move(MoveStyle moveStyle, int inches, Hardware h) {
+//        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+//
+//        moveDistInTicks(moveStyle, ticks, h);
+//    }
+
     /**
-     * Public method to move the robot using encoder position.
+     * Move forward a specified distance.
      *
-     * @param inches The distance to travel in inches.
-     * @param h The Hardware object that holds the motors.
-     * @param moveStyle An enum determining the style of movement.
+     * @param inches The distance to move.
+     * @param h The Hardware class with the motors.
      */
-    public void move(int inches, Hardware h, MoveStyle moveStyle) {
+    public void moveStraightForward(int inches, Hardware h) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
 
-        moveDistInTicks(ticks, h, moveStyle);
+        moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h);
     }
 
-    private void moveDistInTicks(int ticks, Hardware h, MoveStyle moveStyle) {
+    /**
+     * Move backwards a specified distance.
+     *
+     * @param inches The distance to move.
+     * @param h The Hardware class with the motors.
+     */
+    public void moveStraightBack(int inches, Hardware h) {
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+
+        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h);
+    }
+
+    /**
+     * Strafe right a specified distance.
+     *
+     * @param inches The distance to move.
+     * @param h The Hardware class with the motors.
+     */
+    public void moveStrafeRight(int inches, Hardware h) {
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+
+        moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h);
+    }
+
+    /**
+     * Strafe left a specified distance.
+     *
+     * @param inches The distance to move.
+     * @param h The Hardware class with the motors.
+     */
+    public void moveStrafeLeft(int inches, Hardware h) {
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+
+        moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h);
+    }
+
+    /**
+     * Point turn to the right.
+     *
+     * @param degrees The angle to turn relative to the robot, in degrees.
+     * @param h The Hardware class with the motors.
+     */
+    public void moveTurnRight(int degrees, Hardware h) {
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS * degrees * Math.PI / 180);
+
+        moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h);
+    }
+
+    /**
+     * Point turn to the left.
+     *
+     * @param degrees The angle to turn relative to the robot, in degrees.
+     * @param h The Hardware class with the motors.
+     */
+    public void moveTurnLeft(int degrees, Hardware h) {
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS * degrees * Math.PI / 180);
+
+        moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h);
+    }
+
+    private void moveDistInTicks(MoveStyle moveStyle, int ticks, Hardware h) {
+        // Boolean array stores whether or not a motor should be powered in the opposite direction; true if yes.
         boolean motorDirs[] = new boolean[4];
+
         switch (moveStyle) {
             case STRAIGHT_FORWARD:
                 motorDirs[0] = false; motorDirs[1] = false; motorDirs[2] = true; motorDirs[3] = true;
@@ -76,50 +150,68 @@ public class AutonomousTools {
                 break;
         }
 
-        startMotor(h.frontLeft, ticks, motorDirs[0]);
-        startMotor(h.frontRight, ticks, motorDirs[1]);
-        startMotor(h.backLeft, ticks, motorDirs[2]);
-        startMotor(h.backRight, ticks, motorDirs[3]);
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            h.wheels.get(i).setTargetPosition(ticks);
+            h.wheels.get(i).setPower((motorDirs[i] ? -1 : 1) * AUTO_POWER);
+        }
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy());
 
-        h.frontLeft.setPower(0);
-        h.frontRight.setPower(0);
-        h.backLeft.setPower(0);
-        h.backRight.setPower(0);
+        setMotorPower(h);
     }
 
-    private void startMotor(DcMotor motor, int ticks, boolean isReversed) {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setTargetPosition(ticks);
-        motor.setPower(AUTO_POWER);
+    private void setToNoEncoder(Hardware h) {
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
     }
 
     // NOTE ===========================================================
     // If we are to use encoders, we might be able to change these movement methods to be better
     // ================================================================
 
-    public void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware hulk) {
-        hulk.frontLeft.setPower(speed * fl);
-        hulk.frontRight.setPower(speed * fr);
-        hulk.backLeft.setPower(speed * bl);
-        hulk.backRight.setPower(speed * br);
+    public void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware h) {
+        setToNoEncoder(h);
+
+        h.frontLeft.setPower(speed * fl);
+        h.frontRight.setPower(speed * fr);
+        h.backLeft.setPower(speed * bl);
+        h.backRight.setPower(speed * br);
     }
 
-    public void setMotorPower(double speed, Hardware hulk) {
-        hulk.frontLeft.setPower(speed);
-        hulk.frontRight.setPower(speed);
-        hulk.backLeft.setPower(speed);
-        hulk.backRight.setPower(speed);
+    public void setMotorPower(double speed, Hardware h) {
+        setToNoEncoder(h);
+
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setPower(speed);
+        }
     }
 
-    public void setMotorPower(Hardware hulk) {
-        hulk.frontLeft.setPower(0);
-        hulk.frontRight.setPower(0);
-        hulk.backLeft.setPower(0);
-        hulk.backRight.setPower(0);
+    public void setMotorPower(Hardware h) {
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setPower(0);
+        }
     }
 
+    public void setMotorPower(int ticks, double speed, Hardware h) throws InterruptedException {
+        setToNoEncoder(h);
+
+        setMotorPower(speed, h);
+        Thread.sleep(ticks);
+        setMotorPower(h);
+    }
+
+    /**
+     * Activates the robot motors for a period of time.
+     *
+     * @param moveTime The time in milliseconds to move.
+     * @param speed The speed of the motors.
+     * @param hulk The Hardware class with the motors.
+     * @deprecated Use moveStraightForward(), moveStraightBack() instead.
+     */
+    @Deprecated
     public void moveForward(int moveTime, double speed, Hardware hulk) throws InterruptedException {
         /*
         HOW TO USE:
@@ -131,6 +223,15 @@ public class AutonomousTools {
         setMotorPower(hulk);
     }
 
+    /**
+     * Activates the motors in a way that the robot will turn.
+     *
+     * @param degree The degree to turn the robot.
+     * @param dir The direction the robot should turn in.
+     * @param hulk The Hardware class with the motors.
+     * @deprecated Use moveTurnRight() and moveTurnLeft() instead.
+     */
+    @Deprecated
     public void turn(int degree, char dir, Hardware hulk) throws InterruptedException {
         /*
         HOW TO USE:
@@ -146,6 +247,15 @@ public class AutonomousTools {
         setMotorPower(hulk);
     }
 
+    /**
+     * Activates the motors in a way that the robot will strafe.
+     *
+     * @param time The time to activate the robot's motors.
+     * @param dir The direction to strafe in.
+     * @param hulk The Hardware class with the motors.
+     * @deprecated Use moveStrafeRight() and moveStrafeLeft() instead.
+     */
+    @Deprecated
     public void strafe(int time, char dir, Hardware hulk) throws InterruptedException {
         if (dir == 'r') {
             setMotorPower(0.7, 1, -1, -1, 1, hulk);

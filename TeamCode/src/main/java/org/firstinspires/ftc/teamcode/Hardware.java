@@ -5,7 +5,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.ArrayList;
+
 public class Hardware {
+
+    public ArrayList<DcMotor> wheels = new ArrayList<>();
 
     // DEVICES
     DcMotor frontRight;
@@ -46,6 +50,11 @@ public class Hardware {
         frontLeft = hwMap.dcMotor.get("frontLeft");
         backRight = hwMap.dcMotor.get("backRight");
         backLeft = hwMap.dcMotor.get("backLeft");
+
+        wheels.add(frontLeft);
+        wheels.add(frontRight);
+        wheels.add(backLeft);
+        wheels.add(backRight);
     }
 
     private void initMotorSettings(boolean initAuto) {
