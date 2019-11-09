@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -16,6 +17,14 @@ public class Hardware {
     DcMotor frontLeft;
     DcMotor backRight;
     DcMotor backLeft;
+
+    // MECHANISMS
+    Servo flip;
+    Servo bArmRight;
+    Servo bArmLeft;
+    Servo lock;
+
+    DcMotor lift;
 
     private BNO055IMU imu;
 
@@ -55,6 +64,13 @@ public class Hardware {
         wheels.add(frontRight);
         wheels.add(backLeft);
         wheels.add(backRight);
+
+        bArmRight = hwMap.servo.get("bArmRight");
+        bArmLeft = hwMap.servo.get("bArmLeft");
+        flip = hwMap.servo.get("flip");
+        lock = hwMap.servo.get("lock");
+
+        lift = hwMap.dcMotor.get("lift");
     }
 
     private void initMotorSettings(boolean initAuto) {
@@ -77,6 +93,9 @@ public class Hardware {
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
+
+        bArmRight.setDirection(Servo.Direction.REVERSE);
+        bArmLeft.setDirection(Servo.Direction.FORWARD);
     }
 
     private void initDefaultPosition() {
