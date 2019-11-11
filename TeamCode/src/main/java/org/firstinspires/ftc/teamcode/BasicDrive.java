@@ -11,7 +11,12 @@ public class BasicDrive extends LinearOpMode {
 
     public void runOpMode() throws InterruptedException {
         hulk.init(hardwareMap, false);
-
+        hulk.bArmLeft.setPower(-.25);
+        Thread.sleep(1000);
+        hulk.bArmLeft.setPower(0);
+        hulk.bArmRight.setPower(-.25);
+        Thread.sleep(1000);
+        hulk.bArmRight.setPower(0);
         waitForStart();
 
         while (opModeIsActive()) {
@@ -49,12 +54,32 @@ public class BasicDrive extends LinearOpMode {
 
             // BUTTONS
 
-
+            if(gamepad2.a)
+            {
+                hulk.bArmLeft.setPower(1);
+                hulk.bArmRight.setPower(1);
+                Thread.sleep(500);
+                hulk.bArmLeft.setPower(0);
+                hulk.bArmRight.setPower(0);
+            }
+            else if(gamepad2.b)
+            {
+                hulk.bArmLeft.setPower(-1);
+                hulk.bArmRight.setPower(-1);
+                Thread.sleep(500);
+                hulk.bArmLeft.setPower(0);
+                hulk.bArmRight.setPower(0);
+            }
+            else
+            {
+                hulk.bArmLeft.setPower(0);
+                hulk.bArmRight.setPower(0);
+            }
 
             // TELEMETRY STATEMENTS
 
 
-
+        telemetry.addData("Position of Servo", hulk.flip.getPosition());
             telemetry.update();
             // Adds everything to telemetry
 

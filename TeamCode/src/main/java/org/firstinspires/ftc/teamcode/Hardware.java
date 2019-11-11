@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,8 +21,8 @@ public class Hardware {
 
     // MECHANISMS
     Servo flip;
-    Servo bArmRight;
-    Servo bArmLeft;
+    CRServo bArmRight;
+    CRServo bArmLeft;
     Servo lock;
 
     DcMotor lift;
@@ -65,8 +66,8 @@ public class Hardware {
         wheels.add(backLeft);
         wheels.add(backRight);
 
-        bArmRight = hwMap.servo.get("bArmRight");
-        bArmLeft = hwMap.servo.get("bArmLeft");
+        bArmRight = hwMap.crservo.get("bArmRight");
+        bArmLeft = hwMap.crservo.get("bArmLeft");
         flip = hwMap.servo.get("flip");
         lock = hwMap.servo.get("lock");
 
@@ -94,8 +95,8 @@ public class Hardware {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
-        bArmRight.setDirection(Servo.Direction.REVERSE);
-        bArmLeft.setDirection(Servo.Direction.FORWARD);
+        bArmRight.setDirection(CRServo.Direction.FORWARD);
+        bArmLeft.setDirection(CRServo.Direction.REVERSE);
     }
 
     private void initDefaultPosition() {
@@ -104,6 +105,8 @@ public class Hardware {
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
+        bArmLeft.setPower(0);
+        bArmRight.setPower(0);
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {
