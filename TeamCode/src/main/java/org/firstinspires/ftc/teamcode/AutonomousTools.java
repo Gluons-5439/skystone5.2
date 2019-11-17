@@ -8,13 +8,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.ArrayList;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 public class AutonomousTools {
     final double WHEEL_RADIUS = 2;  // Radius in inches
-    final double AUTO_POWER = 1;
-    final int TICKS_PER_REV = 1220;
+    final double AUTO_POWER = 0.1;
+    final int TICKS_PER_REV = 386;
     final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
+    final int GEAR_RATIO = 2;
 
     static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     static final String LABEL_STONE = "Stone";
@@ -60,7 +63,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveStraightForward(int inches, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+        int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h);
     }
@@ -72,7 +75,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveStraightBack(int inches, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+        int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h);
     }
@@ -84,7 +87,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveStrafeRight(int inches, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+        int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h);
     }
@@ -96,7 +99,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveStrafeLeft(int inches, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * inches);
+        int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h);
     }
@@ -108,7 +111,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveTurnRight(int degrees, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS * degrees * Math.PI / 180);
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
         moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h);
     }
@@ -120,58 +123,152 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      */
     public void moveTurnLeft(int degrees, Hardware h) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS * degrees * Math.PI / 180);
+        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
         moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h);
     }
 
-    private void moveDistInTicks(MoveStyle moveStyle, int ticks, Hardware h) {
-        // Boolean array stores whether or not a motor should be powered in the opposite direction; true if yes.
-        boolean motorDirs[] = new boolean[4];
+    /**
+     * Start the motors to move forwards.
+     *
+     * @param speed The power of the motors.
+     * @param h The Hardware class with the motors.
+     * @param isReverse Whether the robot should instead move backwards.
+     */
+    public void startMoveStraight(double speed, Hardware h, boolean isReverse) {
+        if (isReverse) {
+            startMotors(speed, MoveStyle.STRAIGHT_BACK, h);
+        } else {
+            startMotors(speed, MoveStyle.STRAIGHT_FORWARD, h);
+        }
+    }
+
+    /**
+     * Start the motors to strafe to the right.
+     *
+     * @param speed The power of the motors.
+     * @param h The Hardware class with the motors.
+     * @param isReverse Whether the robot should instead strafe to the left.
+     */
+    public void startMoveStrafe(double speed, Hardware h, boolean isReverse) {
+        if (isReverse) {
+            startMotors(speed, MoveStyle.STRAFE_RIGHT, h);
+        } else {
+            startMotors(speed, MoveStyle.STRAFE_LEFT, h);
+        }
+    }
+
+    /**
+     * Start the motors to turn on point to the right.
+     *
+     * @param h The Hardware class with the motors.
+     * @param speed The power of the motors.
+     * @param isReverse Whether the robot should instead turn to the left.
+     */
+    public void startMoveTurn(double speed, Hardware h, boolean isReverse) {
+        if (isReverse) {
+            startMotors(speed, MoveStyle.POINT_TURN_RIGHT, h);
+        } else {
+            startMotors(speed, MoveStyle.POINT_TURN_LEFT, h);
+        }
+    }
+
+    /**
+     * Stops the motors.
+     *
+     * @param h The Hardware class with the motors.
+     */
+    public void resetMotors(Hardware h) {
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setPower(0);
+        }
+    }
+
+    private int getTicks(int inches) {
+        return (int)(TICKS_PER_REV / IN_PER_REV / GEAR_RATIO * inches);
+    }
+
+    private ArrayList<Integer> getDirs(MoveStyle moveStyle) {
+        ArrayList<Integer> motorDirs = new ArrayList<>();
 
         switch (moveStyle) {
             case STRAIGHT_FORWARD:
-                motorDirs[0] = false; motorDirs[1] = false; motorDirs[2] = true; motorDirs[3] = true;
+                motorDirs.add(1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(1);
                 break;
             case STRAIGHT_BACK:
-                motorDirs[0] = true; motorDirs[1] = true; motorDirs[2] = false; motorDirs[3] = false;
+                motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1);
                 break;
             case STRAFE_RIGHT:
-                motorDirs[0] = true; motorDirs[1] = false; motorDirs[2] = true; motorDirs[3] = false;
+                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(-1);
                 break;
             case STRAFE_LEFT:
-                motorDirs[0] = false; motorDirs[1] = true; motorDirs[2] = false; motorDirs[3] = true;
+                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(1);
                 break;
             case POINT_TURN_RIGHT:
-                motorDirs[0] = false; motorDirs[1] = true; motorDirs[2] = true; motorDirs[3] = false;
+                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1);
                 break;
             case POINT_TURN_LEFT:
-                motorDirs[0] = true; motorDirs[1] = false; motorDirs[2] = false; motorDirs[3] = true;
+                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1);
                 break;
         }
 
+        return motorDirs;
+    }
+
+    private void startMotors(double speed, MoveStyle moveStyle, Hardware h) {
+        ArrayList<Integer> motorDirs = getDirs(moveStyle);
+
+        for (int i = 0; i < h.wheels.size(); i++) {
+            h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            h.wheels.get(i).setPower(motorDirs.get(i) * speed);
+        }
+    }
+
+    private void moveDistInTicks(MoveStyle moveStyle, int ticks, Hardware h) {
+        ArrayList<Integer> motorDirs = getDirs(moveStyle);
+
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            h.wheels.get(i).setTargetPosition(motorDirs.get(i) * ticks);
             h.wheels.get(i).setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            h.wheels.get(i).setTargetPosition(ticks);
-            h.wheels.get(i).setPower((motorDirs[i] ? -1 : 1) * AUTO_POWER);
+            h.wheels.get(i).setPower(motorDirs.get(i) * AUTO_POWER);
         }
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy());
 
-        setMotorPower(h);
-    }
-
-    private void setToNoEncoder(Hardware h) {
-        for (int i = 0; i < h.wheels.size(); i ++ ) {
-            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        resetMotors(h);
     }
 
     // NOTE ===========================================================
     // If we are to use encoders, we might be able to change these movement methods to be better
     // ================================================================
 
+    /**
+     * Sets the motors to not use Encoders.
+     *
+     * @param h The Hardware class with the motors.
+     * @deprecated Due to how the wheels are called in code, this method is superfluous.
+     */
+    @Deprecated
+    private void setToNoEncoder(Hardware h) {
+        for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
+    /**
+     * Sets the power of the motors.
+     *
+     * @param speed The speed of the motors.
+     * @param fl Multiplier for the front-left motor.
+     * @param fr Multiplier for the front-right motor.
+     * @param bl Multiplier for the back-left motor.
+     * @param br Multiplier for the back-right motor.
+     * @param h The Hardware class with the motors.
+     * @deprecated More efficient methods have been designed.
+     */
+    @Deprecated
     public void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware h) {
         setToNoEncoder(h);
 
@@ -181,6 +278,14 @@ public class AutonomousTools {
         h.backRight.setPower(speed * br);
     }
 
+    /**
+     * Sets the power of the motors.
+     *
+     * @param speed The speed of the motors.
+     * @param h The Hardware class with the motors.
+     * @deprecated More efficient methods have been designed.
+     */
+    @Deprecated
     public void setMotorPower(double speed, Hardware h) {
         setToNoEncoder(h);
 
@@ -189,6 +294,13 @@ public class AutonomousTools {
         }
     }
 
+    /**
+     * Sets the power of the motors.
+     *
+     * @param h The Hardware class with the motors.
+     * @deprecated More efficient methods have been designed.
+     */
+    @Deprecated
     public void setMotorPower(Hardware h) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setPower(0);

@@ -24,6 +24,7 @@ public class Hardware {
     CRServo bArmRight;
     CRServo bArmLeft;
     Servo lock;
+    Servo rake;
 
     DcMotor lift;
 
@@ -72,6 +73,8 @@ public class Hardware {
         lock = hwMap.servo.get("lock");
 
         lift = hwMap.dcMotor.get("lift");
+        rake = hwMap.servo.get("rake");
+
     }
 
     private void initMotorSettings(boolean initAuto) {
@@ -84,6 +87,14 @@ public class Hardware {
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         } else {
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRight.setTargetPosition(0);
+            frontLeft.setTargetPosition(0);
+            backRight.setTargetPosition(0);
+            backLeft.setTargetPosition(0);
             frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -97,6 +108,9 @@ public class Hardware {
 
         bArmRight.setDirection(CRServo.Direction.FORWARD);
         bArmLeft.setDirection(CRServo.Direction.REVERSE);
+        rake.setDirection(Servo.Direction.FORWARD);
+
+        lift.setDirection(DcMotor.Direction.FORWARD);
     }
 
     private void initDefaultPosition() {
@@ -105,7 +119,7 @@ public class Hardware {
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        bArmLeft.setPower(0);
+        bArmLeft.setPower(0.5);
         bArmRight.setPower(0);
     }
 
