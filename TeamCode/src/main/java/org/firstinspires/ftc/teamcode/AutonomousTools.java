@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.support.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -7,24 +9,23 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.ArrayList;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
-
 public class AutonomousTools {
-    final double WHEEL_RADIUS = 2;  // Radius in inches
-    final double AUTO_POWER = 0.1;
-    final int TICKS_PER_REV = 386;
-    final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
-    final int GEAR_RATIO = 2;
+    private final double WHEEL_RADIUS = 2;  // Radius in inches
+    private final double AUTO_POWER = 0.1;
+    private final int TICKS_PER_REV = 386;
+    private final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
+    private final int GEAR_RATIO = 2;
 
     static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     static final String LABEL_STONE = "Stone";
     static final String LABEL_SKYSTONE = "Skystone";
 
-    public VuforiaLocalizer vuforia;
-    public TFObjectDetector tfod;
+    VuforiaLocalizer vuforia;
+    TFObjectDetector tfod;
 
     public AutonomousTools() {
 
@@ -62,7 +63,7 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    public void moveStraightForward(int inches, Hardware h) {
+    void moveStraightForward(int inches, @NonNull Hardware h) {
         int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h);
@@ -74,7 +75,7 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    public void moveStraightBack(int inches, Hardware h) {
+    void moveStraightBack(int inches, @NonNull Hardware h) {
         int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h);
@@ -86,7 +87,7 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    public void moveStrafeRight(int inches, Hardware h) {
+    void moveStrafeRight(int inches, @NonNull Hardware h) {
         int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h);
@@ -98,7 +99,7 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    public void moveStrafeLeft(int inches, Hardware h) {
+    void moveStrafeLeft(int inches, @NonNull Hardware h) {
         int ticks = getTicks(inches);
 
         moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h);
@@ -110,7 +111,7 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    public void moveTurnRight(int degrees, Hardware h) {
+    void moveTurnRight(int degrees, @NonNull Hardware h) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
         moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h);
@@ -122,7 +123,7 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    public void moveTurnLeft(int degrees, Hardware h) {
+    void moveTurnLeft(int degrees, @NonNull Hardware h) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
         moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h);
@@ -135,7 +136,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      * @param isReverse Whether the robot should instead move backwards.
      */
-    public void startMoveStraight(double speed, Hardware h, boolean isReverse) {
+    void startMoveStraight(double speed, @NonNull Hardware h, boolean isReverse) {
         if (isReverse) {
             startMotors(speed, MoveStyle.STRAIGHT_BACK, h);
         } else {
@@ -150,7 +151,7 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      * @param isReverse Whether the robot should instead strafe to the left.
      */
-    public void startMoveStrafe(double speed, Hardware h, boolean isReverse) {
+    void startMoveStrafe(double speed, @NonNull Hardware h, boolean isReverse) {
         if (isReverse) {
             startMotors(speed, MoveStyle.STRAFE_RIGHT, h);
         } else {
@@ -165,7 +166,7 @@ public class AutonomousTools {
      * @param speed The power of the motors.
      * @param isReverse Whether the robot should instead turn to the left.
      */
-    public void startMoveTurn(double speed, Hardware h, boolean isReverse) {
+    void startMoveTurn(double speed, @NonNull Hardware h, boolean isReverse) {
         if (isReverse) {
             startMotors(speed, MoveStyle.POINT_TURN_RIGHT, h);
         } else {
@@ -178,8 +179,9 @@ public class AutonomousTools {
      *
      * @param h The Hardware class with the motors.
      */
-    public void resetMotors(Hardware h) {
+    void resetMotors(@NonNull Hardware h) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
+            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             h.wheels.get(i).setPower(0);
         }
     }
@@ -188,7 +190,7 @@ public class AutonomousTools {
         return (int)(TICKS_PER_REV / IN_PER_REV / GEAR_RATIO * inches);
     }
 
-    private ArrayList<Integer> getDirs(MoveStyle moveStyle) {
+    private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
         ArrayList<Integer> motorDirs = new ArrayList<>();
 
         switch (moveStyle) {
@@ -215,7 +217,7 @@ public class AutonomousTools {
         return motorDirs;
     }
 
-    private void startMotors(double speed, MoveStyle moveStyle, Hardware h) {
+    private void startMotors(double speed, @NonNull MoveStyle moveStyle, @NonNull Hardware h) {
         ArrayList<Integer> motorDirs = getDirs(moveStyle);
 
         for (int i = 0; i < h.wheels.size(); i++) {
@@ -225,14 +227,14 @@ public class AutonomousTools {
         }
     }
 
-    private void moveDistInTicks(MoveStyle moveStyle, int ticks, Hardware h) {
+    private void moveDistInTicks(@NonNull MoveStyle moveStyle, int ticks, @NonNull Hardware h) {
         ArrayList<Integer> motorDirs = getDirs(moveStyle);
 
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             h.wheels.get(i).setTargetPosition(motorDirs.get(i) * ticks);
             h.wheels.get(i).setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            h.wheels.get(i).setPower(motorDirs.get(i) * AUTO_POWER);
+            h.wheels.get(i).setPower((moveStyle == MoveStyle.STRAFE_LEFT || moveStyle == MoveStyle.STRAFE_RIGHT ? 2 : 1) * motorDirs.get(i) * AUTO_POWER);
         }
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy());
@@ -243,6 +245,7 @@ public class AutonomousTools {
     // NOTE ===========================================================
     // If we are to use encoders, we might be able to change these movement methods to be better
     // ================================================================
+    // Update: we made the movement methods better
 
     /**
      * Sets the motors to not use Encoders.
@@ -251,7 +254,7 @@ public class AutonomousTools {
      * @deprecated Due to how the wheels are called in code, this method is superfluous.
      */
     @Deprecated
-    private void setToNoEncoder(Hardware h) {
+    private void setToNoEncoder(@NonNull Hardware h) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
@@ -301,7 +304,7 @@ public class AutonomousTools {
      * @deprecated More efficient methods have been designed.
      */
     @Deprecated
-    public void setMotorPower(Hardware h) {
+    public void setMotorPower(@NonNull Hardware h) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setPower(0);
         }
@@ -384,7 +387,7 @@ public class AutonomousTools {
         initTfod(h);
     }
 
-    public void initVuforia() {
+    private void initVuforia() {
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -394,7 +397,7 @@ public class AutonomousTools {
 
     }
 
-    private void initTfod(HardwareMap hardwareMap) {
+    private void initTfod(@NonNull HardwareMap hardwareMap) {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforia);

@@ -5,13 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
+import java.lang.Runnable;
+
 import java.util.List;
 
 @Autonomous(name = "RedAuto", group = "Autonomous")
 public class RedAuto extends LinearOpMode {
 
-    Hardware hardware = new Hardware();
-    AutonomousTools auto = new AutonomousTools();
+    private Hardware hardware = new Hardware();
+    private AutonomousTools auto = new AutonomousTools();
 
     public void runOpMode() throws InterruptedException {
 
@@ -21,14 +23,40 @@ public class RedAuto extends LinearOpMode {
         waitForStart();
         auto.tfod.activate();
 
+        Thread thread = new Thread() {
+            public void run() {
+                telemetry.addData("Motor FL: ", hardware.frontLeft.getPower());
+                telemetry.addData("Motor FR: ", hardware.frontRight.getPower());
+                telemetry.addData("Motor BL: ", hardware.backLeft.getPower());
+                telemetry.addData("Motor BR: ", hardware.backRight.getPower());
+                telemetry.update();
+            }
+        };
+
+        thread.start();
+//        auto.moveStraightForward(24, hardware);
+//        auto.moveStraightBack(24, hardware);
+//        Thread.sleep(500);
+//        auto.moveStrafeLeft(12, hardware);
+//        Thread.sleep(500);
+//        auto.moveTurnRight(90, hardware);
+//        Thread.sleep(500);
+//        auto.moveStraightForward(12, hardware);
+//        auto.moveTurnLeft(90, hardware);
+        auto.moveStraightForward(72, hardware);
+        Thread.sleep(500);
+        auto.moveTurnRight(180, hardware);
+        auto.moveStraightForward(48, hardware);
+        Thread.sleep(500);
+        auto.moveTurnLeft(90, hardware);
+        auto.moveTurnRight(90, hardware);
         auto.moveStraightForward(24, hardware);
-        auto.moveStraightBack(24, hardware);
-        Thread.sleep(2000);
+        thread.interrupt();
         if (auto.tfod != null) {
 
-            auto.moveStrafeLeft(12, hardware);
 
-            auto.startMoveStraight(0.1, hardware, false);
+
+            //auto.startMoveStraight(0.1, hardware, false);
             while (opModeIsActive()) {
                 List<Recognition> updatedRecognitions = auto.tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {

@@ -62,11 +62,6 @@ public class Hardware {
         backRight = hwMap.dcMotor.get("backRight");
         backLeft = hwMap.dcMotor.get("backLeft");
 
-        wheels.add(frontLeft);
-        wheels.add(frontRight);
-        wheels.add(backLeft);
-        wheels.add(backRight);
-
         bArmRight = hwMap.crservo.get("bArmRight");
         bArmLeft = hwMap.crservo.get("bArmLeft");
         flip = hwMap.servo.get("flip");
@@ -106,9 +101,15 @@ public class Hardware {
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
 
+        wheels.add(frontLeft);
+        wheels.add(frontRight);
+        wheels.add(backLeft);
+        wheels.add(backRight);
+
         bArmRight.setDirection(CRServo.Direction.FORWARD);
         bArmLeft.setDirection(CRServo.Direction.REVERSE);
         rake.setDirection(Servo.Direction.FORWARD);
+        flip.setDirection(Servo.Direction.FORWARD);
 
         lift.setDirection(DcMotor.Direction.FORWARD);
     }

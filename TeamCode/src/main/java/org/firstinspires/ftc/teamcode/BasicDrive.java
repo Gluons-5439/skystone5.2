@@ -1,21 +1,28 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Basic Drive", group = "TeleOp")
 public class BasicDrive extends LinearOpMode {
-    private final double maxPower = 0.75;
     Hardware h = new Hardware();
     AutonomousTools t = new AutonomousTools();
 
     public void runOpMode() throws InterruptedException {
 
         h.init(hardwareMap, false);
-        waitForStart();
+
+        double maxPower = 0.75;
 
         boolean rakeIsLowered = false;
         int rakeButtonCD = 0;
+        int slowModeButtonCD = 0;
+        boolean bArmIsClosed = false;
+        int bArmButtonCD = 0;
+
+        waitForStart();
+
         while (opModeIsActive()) {
 
             // DRIVE ====================================================                                                              Wheel vectors
@@ -31,44 +38,50 @@ public class BasicDrive extends LinearOpMode {
             double br = forward - clockwise - right;  //-
             double fl = forward + clockwise - right;  //-
             double bl = forward + clockwise + right;  //+
-//            double max = Math.abs(fl);
-//            if (Math.abs(fr) > max)
-//                max = Math.abs(fr);
-//            if (Math.abs(bl) > max)
-//                max = Math.abs(bl);
-//            if (Math.abs(br) > max)
-//                max = Math.abs(br);
-//            if (max > 1) {
-//                fl /= max;
-//                fr /= max;
-//                bl /= max;
-//                br /= max;
-//            }
+
             h.frontLeft.setPower(Range.scale(fl, -1, 1, -maxPower, maxPower));
             h.backLeft.setPower(Range.scale(bl, -1, 1, -maxPower, maxPower));
             h.frontRight.setPower(Range.scale(fr, -1, 1, -maxPower, maxPower));
             h.backRight.setPower(Range.scale(br, -1, 1, -maxPower, maxPower));
 
-            // BUTTONS
+            // BUTTONS ==================================================
 
+            // Gamepad 1 - Driver
+            if (slowModeButtonCD == 0 && gamepad1.right_bumper) {
+                if (maxPower == 0.75) {
+                    maxPower = 0.375;
+                } else {
+                    maxPower = 0.75;
+                }
+                slowModeButtonCD = 12;
+            }
+
+//             SERVOS TO CHANGE: +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//             * Butterfly arm left - min/max
+//             * Butterfly arm right - min/max
+//             * Flip servo - min/max
+//             * Rake - min/max
+//             * Lock - to CRServo
+
+            // Gamepad 2 - Operator
             // Butterfly arms
-            if(gamepad2.a) {
-                h.bArmLeft.setPower(1);
-                h.bArmRight.setPower(1);
-                Thread.sleep(400);
-                h.bArmLeft.setPower(0.5);
-                h.bArmRight.setPower(0);
-            }
-            else if(gamepad2.b) {
-                h.bArmLeft.setPower(-1);
-                h.bArmRight.setPower(-1);
-                Thread.sleep(400);
-                h.bArmLeft.setPower(0.5);
-                h.bArmRight.setPower(0);
-            }
-            else {
-                h.bArmLeft.setPower(0.5);
-                h.bArmRight.setPower(0);
+            if(bArmButtonCD == 0 && gamepad2.a) {
+                if (!bArmIsClosed) {
+                    h.bArmLeft.setPower(1);
+                    h.bArmRight.setPower(1);
+                    Thread.sleep(400);
+                    h.bArmLeft.setPower(0);
+                    h.bArmRight.setPower(0);
+                    bArmIsClosed = true;
+                } else {
+                    h.bArmLeft.setPower(-1);
+                    h.bArmRight.setPower(-1);
+                    Thread.sleep(400);
+                    h.bArmLeft.setPower(0);
+                    h.bArmRight.setPower(0);
+                    bArmIsClosed = false;
+                }
+                bArmButtonCD = 12;
             }
 
             // "Rake"
@@ -83,17 +96,36 @@ public class BasicDrive extends LinearOpMode {
                 rakeButtonCD = 12;
             }
 
-            if (gamepad1.left_bumper) {
-                h.flip.setPosition(0.8);
-                h.lock.setPosition(0.3);
-                Thread.sleep(2000);
-                h.lift.setPower(1);
-                Thread.sleep(2000);
-                h.flip.setPosition(0);
-                Thread.sleep(5000);
-                h.flip.setPosition(0.8);
-                h.lift.setPower(0.5);
-            }
+            // Flip thingamabob
+            double leftPow = gamepad2.left_trigger > 0.2 ? gamepad2.left_trigger : 0;
+            double rightPow = gamepad2.right_trigger > 0.2 ? gamepad2.right_trigger : 0;
+            h.flip.setPosition(Range.clip(h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow, 0, 0.8));    // Position not final
+
+//            // Lift motor
+//            h.lift.setPower((gamepad2.left_bumper ? -1 : 0) + (gamepad2.right_bumper ? 1 : 0));
+//            if (gamepad2.right_bumper) {
+//                h.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                h.lift.setPower(0.75);
+//            } else if (gamepad2.left_bumper) {
+//                h.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                h.lift.setPower(-0.2);
+//            } else {
+//                h.lift.setPower(0.05);
+//                h.lift.setPower(-0.05);
+//            }
+
+            // Probably should go in Autonomous somewhere
+//            if (gamepad1.left_bumper) {
+//                h.flip.setPosition(0.8);
+//                h.lock.setPosition(0.3);
+//                Thread.sleep(2000);
+//                h.lift.setPower(1);
+//                Thread.sleep(2000);
+//                h.flip.setPosition(0);
+//                Thread.sleep(5000);
+//                h.flip.setPosition(0.8);
+//                h.lift.setPower(0.5);
+//            }
 
             // TELEMETRY STATEMENTS
 
@@ -104,6 +136,12 @@ public class BasicDrive extends LinearOpMode {
 
             if (rakeButtonCD > 0) {
                 rakeButtonCD--;
+            }
+            if (slowModeButtonCD > 0) {
+                slowModeButtonCD--;
+            }
+            if (bArmButtonCD > 0) {
+                bArmButtonCD--;
             }
 
             h.waitForTick(40);
