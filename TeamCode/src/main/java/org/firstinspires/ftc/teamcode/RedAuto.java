@@ -22,18 +22,6 @@ public class RedAuto extends LinearOpMode {
         hardware.init(hardwareMap, true);
         waitForStart();
         auto.tfod.activate();
-
-        Thread thread = new Thread() {
-            public void run() {
-                telemetry.addData("Motor FL: ", hardware.frontLeft.getPower());
-                telemetry.addData("Motor FR: ", hardware.frontRight.getPower());
-                telemetry.addData("Motor BL: ", hardware.backLeft.getPower());
-                telemetry.addData("Motor BR: ", hardware.backRight.getPower());
-                telemetry.update();
-            }
-        };
-
-        thread.start();
 //        auto.moveStraightForward(24, hardware);
 //        auto.moveStraightBack(24, hardware);
 //        Thread.sleep(500);
@@ -43,19 +31,15 @@ public class RedAuto extends LinearOpMode {
 //        Thread.sleep(500);
 //        auto.moveStraightForward(12, hardware);
 //        auto.moveTurnLeft(90, hardware);
-        auto.moveStraightForward(72, hardware);
+        auto.moveStraightForward(72, hardware, telemetry);
         Thread.sleep(500);
-        auto.moveTurnRight(180, hardware);
-        auto.moveStraightForward(48, hardware);
+        auto.moveTurnRight(180, hardware, telemetry);
+        auto.moveStraightForward(48, hardware, telemetry);
         Thread.sleep(500);
-        auto.moveTurnLeft(90, hardware);
-        auto.moveTurnRight(90, hardware);
-        auto.moveStraightForward(24, hardware);
-        thread.interrupt();
+        auto.moveTurnLeft(90, hardware, telemetry);
+        auto.moveTurnRight(90, hardware, telemetry);
+        auto.moveStraightForward(24, hardware, telemetry);
         if (auto.tfod != null) {
-
-
-
             //auto.startMoveStraight(0.1, hardware, false);
             while (opModeIsActive()) {
                 List<Recognition> updatedRecognitions = auto.tfod.getUpdatedRecognitions();

@@ -87,10 +87,10 @@ public class BasicDrive extends LinearOpMode {
             // "Rake"
             if (rakeButtonCD == 0 && gamepad2.x) {
                 if (rakeIsLowered) {    // POSITIONS NOT SET YET ===================================
-                    h.rake.setPosition(1);
+                    h.rake.setPosition(0.3);
                     rakeIsLowered = false;
                 } else {
-                    h.rake.setPosition(.75);
+                    h.rake.setPosition(-0.05);
                     rakeIsLowered = true;
                 }
                 rakeButtonCD = 12;
@@ -99,20 +99,16 @@ public class BasicDrive extends LinearOpMode {
             // Flip thingamabob
             double leftPow = gamepad2.left_trigger > 0.2 ? gamepad2.left_trigger : 0;
             double rightPow = gamepad2.right_trigger > 0.2 ? gamepad2.right_trigger : 0;
-            h.flip.setPosition(Range.clip(h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow, 0, 0.8));    // Position not final
+            h.flip.setPosition(Range.clip((h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow), 0, 0.8));    // Position not final
 
-//            // Lift motor
-//            h.lift.setPower((gamepad2.left_bumper ? -1 : 0) + (gamepad2.right_bumper ? 1 : 0));
-//            if (gamepad2.right_bumper) {
-//                h.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                h.lift.setPower(0.75);
-//            } else if (gamepad2.left_bumper) {
-//                h.lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                h.lift.setPower(-0.2);
-//            } else {
-//                h.lift.setPower(0.05);
-//                h.lift.setPower(-0.05);
-//            }
+            // Lift
+            if (gamepad2.left_bumper) {
+                h.lift.setPower(-0.75);
+            } else if (gamepad2.right_bumper) {
+                h.lift.setPower(0.75);
+            } else {
+                h.lift.setPower(0);
+            }
 
             // Probably should go in Autonomous somewhere
 //            if (gamepad1.left_bumper) {

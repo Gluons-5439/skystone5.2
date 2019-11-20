@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class AutonomousTools {
     private final double WHEEL_RADIUS = 2;  // Radius in inches
     private final double AUTO_POWER = 0.1;
-    private final int TICKS_PER_REV = 386;
+    private final int TICKS_PER_REV = 146;
     private final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
     private final int GEAR_RATIO = 2;
 
@@ -63,10 +63,10 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStraightForward(int inches, @NonNull Hardware h) {
+    void moveStraightForward(int inches, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = getTicks(inches);
 
-        moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h);
+        moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h, telemetry);
     }
 
     /**
@@ -75,10 +75,10 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStraightBack(int inches, @NonNull Hardware h) {
+    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = getTicks(inches);
 
-        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h);
+        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h, telemetry);
     }
 
     /**
@@ -87,10 +87,10 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStrafeRight(int inches, @NonNull Hardware h) {
+    void moveStrafeRight(int inches, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = getTicks(inches);
 
-        moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h);
+        moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h, telemetry);
     }
 
     /**
@@ -99,10 +99,10 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStrafeLeft(int inches, @NonNull Hardware h) {
+    void moveStrafeLeft(int inches, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = getTicks(inches);
 
-        moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h);
+        moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h, telemetry);
     }
 
     /**
@@ -111,10 +111,10 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    void moveTurnRight(int degrees, @NonNull Hardware h) {
+    void moveTurnRight(int degrees, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
-        moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h);
+        moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h, telemetry);
     }
 
     /**
@@ -123,10 +123,10 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    void moveTurnLeft(int degrees, @NonNull Hardware h) {
+    void moveTurnLeft(int degrees, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
 
-        moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h);
+        moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h, telemetry);
     }
 
     /**
@@ -227,7 +227,7 @@ public class AutonomousTools {
         }
     }
 
-    private void moveDistInTicks(@NonNull MoveStyle moveStyle, int ticks, @NonNull Hardware h) {
+    private void moveDistInTicks(@NonNull MoveStyle moveStyle, int ticks, @NonNull Hardware h, Telemetry telemetry) {
         ArrayList<Integer> motorDirs = getDirs(moveStyle);
 
         for (int i = 0; i < h.wheels.size(); i ++ ) {
@@ -237,7 +237,15 @@ public class AutonomousTools {
             h.wheels.get(i).setPower((moveStyle == MoveStyle.STRAFE_LEFT || moveStyle == MoveStyle.STRAFE_RIGHT ? 2 : 1) * motorDirs.get(i) * AUTO_POWER);
         }
 
-        while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy());
+        while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy()) {
+            for (int j = 0; j < h.wheels.size(); j ++ ) {
+                telemetry.addData("Motor " + j + " direction: ", motorDirs.get(j));
+                telemetry.addData("Motor " + j + " power: ", h.wheels.get(j).getPower());
+                telemetry.addData("Motor " + j + " position: ", h.wheels.get(j).getCurrentPosition());
+                telemetry.addData("Motor " + j + " destination: ", motorDirs.get(j) * ticks);
+            }
+            telemetry.update();
+        }
 
         resetMotors(h);
     }

@@ -23,7 +23,7 @@ public class Hardware {
     Servo flip;
     CRServo bArmRight;
     CRServo bArmLeft;
-    Servo lock;
+    CRServo lock;
     Servo rake;
 
     DcMotor lift;
@@ -65,7 +65,7 @@ public class Hardware {
         bArmRight = hwMap.crservo.get("bArmRight");
         bArmLeft = hwMap.crservo.get("bArmLeft");
         flip = hwMap.servo.get("flip");
-        lock = hwMap.servo.get("lock");
+        lock = hwMap.crservo.get("lock");
 
         lift = hwMap.dcMotor.get("lift");
         rake = hwMap.servo.get("rake");
@@ -111,7 +111,7 @@ public class Hardware {
         rake.setDirection(Servo.Direction.FORWARD);
         flip.setDirection(Servo.Direction.FORWARD);
 
-        lift.setDirection(DcMotor.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void initDefaultPosition() {
@@ -120,8 +120,9 @@ public class Hardware {
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        bArmLeft.setPower(0.5);
+        bArmLeft.setPower(0);
         bArmRight.setPower(0);
+        lock.setPower(0);
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {
