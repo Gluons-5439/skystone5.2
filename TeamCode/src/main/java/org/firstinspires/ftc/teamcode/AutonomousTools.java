@@ -259,9 +259,9 @@ public class AutonomousTools {
      * Sets the motors to not use Encoders.
      *
      * @param h The Hardware class with the motors.
-     * @deprecated Due to how the wheels are called in code, this method is superfluous.
+     *
      */
-    @Deprecated
+
     private void setToNoEncoder(@NonNull Hardware h) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -277,11 +277,11 @@ public class AutonomousTools {
      * @param bl Multiplier for the back-left motor.
      * @param br Multiplier for the back-right motor.
      * @param h The Hardware class with the motors.
-     * @deprecated More efficient methods have been designed.
+     *
      */
-    @Deprecated
+
     public void setMotorPower(double speed, int fl, int fr, int bl, int br, Hardware h) {
-        setToNoEncoder(h);
+       // setToNoEncoder(h);
 
         h.frontLeft.setPower(speed * fl);
         h.frontRight.setPower(speed * fr);
@@ -294,11 +294,11 @@ public class AutonomousTools {
      *
      * @param speed The speed of the motors.
      * @param h The Hardware class with the motors.
-     * @deprecated More efficient methods have been designed.
+     *
      */
-    @Deprecated
+
     public void setMotorPower(double speed, Hardware h) {
-        setToNoEncoder(h);
+        //setToNoEncoder(h);
 
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setPower(speed);
@@ -309,22 +309,22 @@ public class AutonomousTools {
      * Sets the power of the motors.
      *
      * @param h The Hardware class with the motors.
-     * @deprecated More efficient methods have been designed.
+     *
      */
-    @Deprecated
-    public void setMotorPower(@NonNull Hardware h) {
-        for (int i = 0; i < h.wheels.size(); i ++ ) {
-            h.wheels.get(i).setPower(0);
-        }
-    }
 
-    public void setMotorPower(int ticks, double speed, Hardware h) throws InterruptedException {
-        setToNoEncoder(h);
+   // public void setMotorPower(@NonNull Hardware h) {
+    //    for (int i = 0; i < h.wheels.size(); i ++ ) {
+   //         h.wheels.get(i).setPower(0);
+     //   }
+   // }
 
-        setMotorPower(speed, h);
-        Thread.sleep(ticks);
-        setMotorPower(h);
-    }
+//    public void setMotorPower(int ticks, double speed, Hardware h) throws InterruptedException {
+//        //setToNoEncoder(h);
+//
+//        setMotorPower(speed, h);
+//        Thread.sleep(ticks);
+//        setMotorPower(h);
+//    }
 
     /**
      * Activates the robot motors for a period of time.
@@ -332,18 +332,24 @@ public class AutonomousTools {
      * @param moveTime The time in milliseconds to move.
      * @param speed The speed of the motors.
      * @param hulk The Hardware class with the motors.
-     * @deprecated Use moveStraightForward(), moveStraightBack() instead.
+     *
      */
-    @Deprecated
+
     public void moveForward(int moveTime, double speed, Hardware hulk) throws InterruptedException {
         /*
         HOW TO USE:
         MAXSPEED   67.5 in/sec
         DISTANCE TRAVELED = MAXSPEED * (moveTime / 1000) * speed
          */
-        setMotorPower(speed, 1, 1, 1, 1, hulk);
+        hulk.frontRight.setPower(speed);
+        hulk.frontLeft.setPower(speed);
+        hulk.backRight.setPower(speed);
+        hulk.backLeft.setPower(speed);
         Thread.sleep(moveTime);
-        setMotorPower(hulk);
+        hulk.frontRight.setPower(0);
+        hulk.frontLeft.setPower(0);
+        hulk.backRight.setPower(0);
+        hulk.backLeft.setPower(0);
     }
 
     /**
@@ -352,9 +358,10 @@ public class AutonomousTools {
      * @param degree The degree to turn the robot.
      * @param dir The direction the robot should turn in.
      * @param hulk The Hardware class with the motors.
-     * @deprecated Use moveTurnRight() and moveTurnLeft() instead.
+     *
+     *
      */
-    @Deprecated
+
     public void turn(int degree, char dir, Hardware hulk) throws InterruptedException {
         /*
         HOW TO USE:
@@ -367,7 +374,7 @@ public class AutonomousTools {
             setMotorPower(0.7, -1, 1, -1, 1, hulk);
         }
         Thread.sleep((int)(550 * degree / 90));
-        setMotorPower(hulk);
+        setMotorPower(0, hulk);
     }
 
     /**
@@ -376,18 +383,30 @@ public class AutonomousTools {
      * @param time The time to activate the robot's motors.
      * @param dir The direction to strafe in.
      * @param hulk The Hardware class with the motors.
-     * @deprecated Use moveStrafeRight() and moveStrafeLeft() instead.
+     *
      */
-    @Deprecated
+
     public void strafe(int time, char dir, Hardware hulk) throws InterruptedException {
-        if (dir == 'r') {
-            setMotorPower(0.7, 1, -1, -1, 1, hulk);
+
+        if (dir == 'l') {
+
+            hulk.frontRight.setPower(-.7);
+            hulk.frontLeft.setPower(.7);
+            hulk.backRight.setPower(.7);
+            hulk.backLeft.setPower(-.7);
         }
-        else if (dir == 'l'){
-            setMotorPower(0.7, -1, 1, 1, -1, hulk);
+        else if (dir == 'r'){
+
+            hulk.frontRight.setPower(.7);
+            hulk.frontLeft.setPower(-.7);
+            hulk.backRight.setPower(-.7);
+            hulk.backLeft.setPower(.7);
         }
         Thread.sleep(time);
-        setMotorPower(hulk);
+        hulk.frontRight.setPower(0);
+        hulk.frontLeft.setPower(0);
+        hulk.backRight.setPower(0);
+        hulk.backLeft.setPower(0);
     }
 
     public void initSensors(HardwareMap h) {
@@ -412,5 +431,30 @@ public class AutonomousTools {
         this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
         tfodParameters.minimumConfidence = 0.6;
     }
+
+    public void moveRake(char dir, Hardware hulk) throws  InterruptedException {
+    if(dir == 'd')
+        {
+        hulk.rake.setPosition(.3);
+        }
+    else if(dir == 'u')
+        {
+        hulk.rake.setPosition(0.6);
+        }
+    }
+
+    public void openArms(Hardware hulk) throws InterruptedException
+    {
+        hulk.bArmLeft.setPosition(0);
+        Thread.sleep(500);
+        hulk.bArmRight.setPosition(.5);
+        Thread.sleep(500);
+    }
+    public void closeArms(Hardware hulk) throws InterruptedException
+    {
+        hulk.bArmLeft.setPosition(.55);
+        hulk.bArmRight.setPosition(1);
+    }
+
 
 }

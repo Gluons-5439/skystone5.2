@@ -18,49 +18,78 @@ public class BlueAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         auto.initSensors(hardwareMap);
-
-        hardware.init(hardwareMap, true);
+        boolean foundStones = false;
+        hardware.init(hardwareMap, false);
+        String p = "";
         waitForStart();
         auto.tfod.activate();
-//        auto.moveStraightForward(24, hardware);
-//        auto.moveStraightBack(24, hardware);
-//        Thread.sleep(500);
-//        auto.moveStrafeLeft(12, hardware);
-//        Thread.sleep(500);
-//        auto.moveTurnRight(90, hardware);
-//        Thread.sleep(500);
-//        auto.moveStraightForward(12, hardware);
-//        auto.moveTurnLeft(90, hardware);
-        auto.moveStraightForward(72, hardware, telemetry);
-        Thread.sleep(500);
-        auto.moveTurnRight(180, hardware, telemetry);
-        auto.moveStraightForward(48, hardware, telemetry);
-        Thread.sleep(500);
-        auto.moveTurnLeft(90, hardware, telemetry);
-        auto.moveTurnRight(90, hardware, telemetry);
-        auto.moveStraightForward(24, hardware, telemetry);
         if (auto.tfod != null) {
-            //auto.startMoveStraight(0.1, hardware, false);
-            while (opModeIsActive()) {
+            foundStones = false;
+        }
+        while (!foundStones) {
                 List<Recognition> updatedRecognitions = auto.tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    int foundNum = updatedRecognitions.size();
+                    if (updatedRecognitions != null) {
+                        int foundNum = updatedRecognitions.size();
                     telemetry.addData("Found ", foundNum);
                     if (foundNum == 3) {
-                        auto.resetMotors(hardware);
-                        int skystonePos = 0;
-                        int pos = 0;
-                        for (Recognition obj : updatedRecognitions) {
-                            pos++;
-                            if (obj.getLabel().equals(AutonomousTools.LABEL_SKYSTONE)) {
-                                skystonePos = pos;
+                        foundStones = true;
+                        int skyStoneX = -1;
+                        int stone1X = -1;
+                        int stone2X = -1;
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel().equals(auto.LABEL_SKYSTONE)) {
+                                skyStoneX = (int) recognition.getRight();
+                            }
+                            else if (stone1X == -1 && recognition.getLabel().equals(auto.LABEL_STONE)) {
+                                stone1X = (int) recognition.getRight();
+                            }
+                            else if(stone2X == -1 && recognition.getLabel().equals(auto.LABEL_STONE)) {
+                                stone2X = (int) recognition.getRight();
                             }
                         }
-                        telemetry.addData("Skystone at position ", skystonePos);
+                        if (skyStoneX > stone1X && skyStoneX > stone2X) {
+                            p = "Right";
+                        }
+                        else if(skyStoneX < stone1X && skyStoneX < stone2X) {
+                            p = "Left";
+                        }
+                        else
+                            p = "Center";
                     }
+                    telemetry.addData("Stone Position: ",p);
                     telemetry.update();
                 }
-            }
+
         }
+
+        auto.strafe(1475,'r',hardware); //strafes to skystones
+        Thread.sleep(2000);
+        if(p.equals("Center")){
+            auto.moveForward(300,.4,hardware);
+        }
+        else if(p.equals("Left")){
+            auto.moveForward(600,.4,hardware);
+        }
+        //insert a little up or a little down depending on skystone pos
+        auto.moveRake('d', hardware); //drops the rake
+        Thread.sleep(2000);
+        auto.strafe(1000,'l',hardware);//pulls the stone out
+        auto.moveRake('u',hardware);//lifts rake again
+        Thread.sleep(2000);
+        auto.moveForward(400,-.5,hardware); //goes behind stone
+        auto.strafe(1000,'r',hardware); //centers itself to the stone
+        auto.openArms(hardware); //opens barms
+        Thread.sleep(2000);
+        auto.moveForward(400,.5,hardware); //gets close to the stone
+        auto.closeArms(hardware); //closes arms
+        Thread.sleep(1000);
+        auto.openArms(hardware); //opens again because the block has been positioned
+        auto.moveForward(300,.6,hardware); //drives into block
+        hardware.lock.setPower(-0.5); //locks block in
+        Thread.sleep(500);
+
     }
 }
+
+
+

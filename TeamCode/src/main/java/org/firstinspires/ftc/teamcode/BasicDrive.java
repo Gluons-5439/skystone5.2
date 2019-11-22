@@ -13,12 +13,14 @@ public class BasicDrive extends LinearOpMode {
 
         h.init(hardwareMap, false);
 
-        double maxPower = 0.75;
+        double maxPower = .75;
 
-        boolean rakeIsLowered = false;
+        int rakeIsLowered = 0;
         int rakeButtonCD = 0;
+        int lockButtonCD = 0;
         int slowModeButtonCD = 0;
         boolean bArmIsClosed = false;
+        int lockMode = 0;
         int bArmButtonCD = 0;
 
         waitForStart();
@@ -67,31 +69,32 @@ public class BasicDrive extends LinearOpMode {
             // Butterfly arms
             if(bArmButtonCD == 0 && gamepad2.a) {
                 if (!bArmIsClosed) {
-                    h.bArmLeft.setPower(1);
-                    h.bArmRight.setPower(1);
-                    Thread.sleep(400);
-                    h.bArmLeft.setPower(0);
-                    h.bArmRight.setPower(0);
+                    h.bArmLeft.setPosition(.55);
+                    h.bArmRight.setPosition(1);
                     bArmIsClosed = true;
                 } else {
-                    h.bArmLeft.setPower(-1);
-                    h.bArmRight.setPower(-1);
-                    Thread.sleep(400);
-                    h.bArmLeft.setPower(0);
-                    h.bArmRight.setPower(0);
+                    h.bArmLeft.setPosition(0);
+                    h.bArmRight.setPosition(.5);
                     bArmIsClosed = false;
                 }
                 bArmButtonCD = 12;
             }
 
             // "Rake"
-            if (rakeButtonCD == 0 && gamepad2.x) {
-                if (rakeIsLowered) {    // POSITIONS NOT SET YET ===================================
-                    h.rake.setPosition(0.3);
-                    rakeIsLowered = false;
-                } else {
-                    h.rake.setPosition(-0.05);
-                    rakeIsLowered = true;
+            if (rakeButtonCD == 0 && gamepad2.x)
+                {
+                if (rakeIsLowered == 0) {
+                    h.rake.setPosition(0.6);
+                    rakeIsLowered = 1;
+                } else if(rakeIsLowered == 1)
+                {
+                    h.rake.setPosition(.3);
+                    rakeIsLowered = 2;
+                }
+                else
+                {
+                    h.rake.setPosition(0);
+                    rakeIsLowered = 0;
                 }
                 rakeButtonCD = 12;
             }
@@ -99,7 +102,21 @@ public class BasicDrive extends LinearOpMode {
             // Flip thingamabob
             double leftPow = gamepad2.left_trigger > 0.2 ? gamepad2.left_trigger : 0;
             double rightPow = gamepad2.right_trigger > 0.2 ? gamepad2.right_trigger : 0;
-            h.flip.setPosition(Range.clip((h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow), 0, 0.8));    // Position not final
+
+            if(gamepad2.right_trigger >.2)
+            {
+                h.flip.setPower(.5);
+            }
+            else if(gamepad2.left_trigger > .2)
+            {
+                h.flip.setPower(-.5);
+            }
+            else
+            {
+                h.flip.setPower(0);
+            }
+
+           // h.flip.setPosition(Range.clip((h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow), 0, 0.8));    // Position not final
 
             // Lift
             if (gamepad2.left_bumper) {
@@ -108,6 +125,25 @@ public class BasicDrive extends LinearOpMode {
                 h.lift.setPower(0.75);
             } else {
                 h.lift.setPower(0);
+            }
+
+            //Lock
+            if (lockButtonCD == 0 && gamepad2.b)
+            {
+                if (lockMode == 0) {
+                    h.lock.setPower(-0.5);
+                    lockMode = 1;
+                } else if(lockMode == 1)
+                {
+                    h.lock.setPower(0.5);
+                    lockMode = 2;
+                }
+                else
+                {
+                    h.lock.setPower(0);
+                    lockMode = 0;
+                }
+                lockButtonCD = 12;
             }
 
             // Probably should go in Autonomous somewhere
@@ -126,7 +162,10 @@ public class BasicDrive extends LinearOpMode {
             // TELEMETRY STATEMENTS
 
 
-            telemetry.addData("Position of Servo", h.flip.getPosition());
+            telemetry.addData("Position of Servo", h.bArmLeft.getPosition());
+            telemetry.addData("Position of Servo", h.bArmRight.getPosition());
+            telemetry.addData("Left Trigger", gamepad2.left_trigger);
+            telemetry.addData("Right Trigger", gamepad2.right_trigger);
             telemetry.update();
             // Adds everything to telemetry
 
@@ -138,6 +177,9 @@ public class BasicDrive extends LinearOpMode {
             }
             if (bArmButtonCD > 0) {
                 bArmButtonCD--;
+            }
+            if (lockButtonCD > 0) {
+                lockButtonCD--;
             }
 
             h.waitForTick(40);

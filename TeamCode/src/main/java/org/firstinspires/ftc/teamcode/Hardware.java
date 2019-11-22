@@ -20,9 +20,9 @@ public class Hardware {
     DcMotor backLeft;
 
     // MECHANISMS
-    Servo flip;
-    CRServo bArmRight;
-    CRServo bArmLeft;
+    CRServo flip;
+    Servo bArmRight;
+    Servo bArmLeft;
     CRServo lock;
     Servo rake;
 
@@ -62,9 +62,9 @@ public class Hardware {
         backRight = hwMap.dcMotor.get("backRight");
         backLeft = hwMap.dcMotor.get("backLeft");
 
-        bArmRight = hwMap.crservo.get("bArmRight");
-        bArmLeft = hwMap.crservo.get("bArmLeft");
-        flip = hwMap.servo.get("flip");
+        bArmRight = hwMap.servo.get("bArmRight");
+        bArmLeft = hwMap.servo.get("bArmLeft");
+        flip = hwMap.crservo.get("flip");
         lock = hwMap.crservo.get("lock");
 
         lift = hwMap.dcMotor.get("lift");
@@ -106,10 +106,10 @@ public class Hardware {
         wheels.add(backLeft);
         wheels.add(backRight);
 
-        bArmRight.setDirection(CRServo.Direction.FORWARD);
-        bArmLeft.setDirection(CRServo.Direction.REVERSE);
+        bArmRight.setDirection(Servo.Direction.FORWARD);
+        bArmLeft.setDirection(Servo.Direction.REVERSE);
         rake.setDirection(Servo.Direction.FORWARD);
-        flip.setDirection(Servo.Direction.FORWARD);
+        flip.setDirection(CRServo.Direction.FORWARD);
 
         lift.setDirection(DcMotor.Direction.REVERSE);
     }
@@ -120,8 +120,6 @@ public class Hardware {
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        bArmLeft.setPower(0);
-        bArmRight.setPower(0);
         lock.setPower(0);
     }
 

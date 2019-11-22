@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@Disabled
 @TeleOp(name = "Setup Program", group = "TeleOp")
 
 public class SetupProgram extends LinearOpMode {
@@ -17,11 +17,22 @@ public class SetupProgram extends LinearOpMode {
         //Upon initialization maps robot hardware
 
         waitForStart();
+            while(opModeIsActive())
+            {
+                if(gamepad2.right_stick_x > .1)
+                {
+                    robot.bArmLeft.setPosition(robot.bArmLeft.getPosition() + .01);
+                }
+                else if(gamepad2.right_stick_x < -.1)
+                {
+                    robot.bArmLeft.setPosition(robot.bArmLeft.getPosition() - .01);
+                }
+                telemetry.addData("Position of Servo", robot.bArmLeft.getPosition());
+                telemetry.addData("Position of Servo", robot.bArmRight.getPosition());
+                telemetry.update();
+                robot.waitForTick(40);
+            }
 
-        while (opModeIsActive()) {
-
-            robot.waitForTick(40);
             //Stops phone from queuing too many commands and breaking
-        }
     }
 }
