@@ -446,14 +446,14 @@ public class AutonomousTools {
     public void openArms(Hardware hulk) throws InterruptedException
     {
         hulk.bArmLeft.setPosition(0);
-        Thread.sleep(500);
-        hulk.bArmRight.setPosition(.5);
+        Thread.sleep(700);
+        hulk.bArmRight.setPosition(0);
         Thread.sleep(500);
     }
     public void closeArms(Hardware hulk) throws InterruptedException
     {
         hulk.bArmLeft.setPosition(.55);
-        hulk.bArmRight.setPosition(1);
+        hulk.bArmRight.setPosition(0.3);
     }
 
 

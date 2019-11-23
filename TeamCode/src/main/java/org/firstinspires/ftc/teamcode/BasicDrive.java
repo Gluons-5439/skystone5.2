@@ -15,13 +15,17 @@ public class BasicDrive extends LinearOpMode {
 
         double maxPower = .75;
 
-        int rakeIsLowered = 0;
+        boolean rakeIsLowered = false;
         int rakeButtonCD = 0;
         int lockButtonCD = 0;
         int slowModeButtonCD = 0;
         boolean bArmIsClosed = false;
-        int lockMode = 0;
+        boolean isLocked = false;
         int bArmButtonCD = 0;
+
+        h.lock.setPower(0.5);
+        Thread.sleep(750);
+        h.lock.setPower(0);
 
         waitForStart();
 
@@ -83,65 +87,57 @@ public class BasicDrive extends LinearOpMode {
             // "Rake"
             if (rakeButtonCD == 0 && gamepad2.x)
                 {
-                if (rakeIsLowered == 0) {
-                    h.rake.setPosition(0.6);
-                    rakeIsLowered = 1;
-                } else if(rakeIsLowered == 1)
-                {
-                    h.rake.setPosition(.3);
-                    rakeIsLowered = 2;
-                }
-                else
-                {
-                    h.rake.setPosition(0);
-                    rakeIsLowered = 0;
+                if (rakeIsLowered) {
+                    // Raise it.
+                    h.rake.setPosition(0.5);
+                    rakeIsLowered = false;
+                } else {
+                    // Drop it.
+                    if (gamepad2.dpad_down) {
+                        h.rake.setPosition(0);
+                    } else {
+                        h.rake.setPosition(.29);
+                    }
+                    rakeIsLowered = true;
                 }
                 rakeButtonCD = 12;
             }
 
             // Flip thingamabob
-            double leftPow = gamepad2.left_trigger > 0.2 ? gamepad2.left_trigger : 0;
-            double rightPow = gamepad2.right_trigger > 0.2 ? gamepad2.right_trigger : 0;
-
-            if(gamepad2.right_trigger >.2)
-            {
-                h.flip.setPower(.5);
-            }
-            else if(gamepad2.left_trigger > .2)
-            {
-                h.flip.setPower(-.5);
-            }
-            else
-            {
+            // CONTROL: Press the left or right triggers to make the arm rotate. The speed of the arm depends on how much you press.
+            if (gamepad2.right_trigger > .2) {
+                h.flip.setPower(-1 * Range.scale(gamepad2.right_trigger, 0, 1, 0, 0.5));
+            } else if (gamepad2.left_trigger > .2) {
+                h.flip.setPower(Range.scale(gamepad2.left_trigger, 0, 1, 0, 0.5));
+            } else {
                 h.flip.setPower(0);
             }
 
            // h.flip.setPosition(Range.clip((h.flip.getPosition() - 0.25 * leftPow + 0.25 * rightPow), 0, 0.8));    // Position not final
 
             // Lift
+            // CONTROL: Press the left or right bumper to elevate the arm.
             if (gamepad2.left_bumper) {
-                h.lift.setPower(-0.75);
+                h.lift.setPower(-0.5);
             } else if (gamepad2.right_bumper) {
-                h.lift.setPower(0.75);
+                h.lift.setPower(0.5);
             } else {
                 h.lift.setPower(0);
             }
 
             //Lock
-            if (lockButtonCD == 0 && gamepad2.b)
-            {
-                if (lockMode == 0) {
+            // CONTROL: Press 'B' to either lock or unlock.
+            if (lockButtonCD == 0 && gamepad2.b) {
+                if (!isLocked) {
+                    // Unlocked and locking.
                     h.lock.setPower(-0.5);
-                    lockMode = 1;
-                } else if(lockMode == 1)
-                {
+                    isLocked = true;
+                } else {
+                    // Locked and unlocking.
                     h.lock.setPower(0.5);
-                    lockMode = 2;
-                }
-                else
-                {
+                    Thread.sleep(600);
                     h.lock.setPower(0);
-                    lockMode = 0;
+                    isLocked = false;
                 }
                 lockButtonCD = 12;
             }

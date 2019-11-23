@@ -39,7 +39,7 @@ public class Hardware {
     }
 
 
-    public void init(HardwareMap ahwMap, boolean initAuto) {
+    public void init(HardwareMap ahwMap, boolean initAuto) throws InterruptedException {
         hwMap = ahwMap;
         initDevices();
         initMotorSettings(initAuto);
@@ -114,12 +114,14 @@ public class Hardware {
         lift.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    private void initDefaultPosition() {
+    private void initDefaultPosition() throws InterruptedException {
         // Set default positions for motors.
         frontRight.setPower(0);
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
+        lock.setPower(0.5);
+        Thread.sleep(500);
         lock.setPower(0);
     }
 
