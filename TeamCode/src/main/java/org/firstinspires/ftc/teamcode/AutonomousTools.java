@@ -243,6 +243,7 @@ public class AutonomousTools {
                 telemetry.addData("Motor " + j + " power: ", h.wheels.get(j).getPower());
                 telemetry.addData("Motor " + j + " position: ", h.wheels.get(j).getCurrentPosition());
                 telemetry.addData("Motor " + j + " destination: ", motorDirs.get(j) * ticks);
+                telemetry.addData("Motor " + j + " dest. actual: ", h.wheels.get(j).getTargetPosition());
             }
             telemetry.update();
         }
@@ -432,29 +433,29 @@ public class AutonomousTools {
         tfodParameters.minimumConfidence = 0.6;
     }
 
-    public void moveRake(char dir, Hardware hulk) throws  InterruptedException {
-    if(dir == 'd')
-        {
-        hulk.rake.setPosition(.3);
-        }
-    else if(dir == 'u')
-        {
-        hulk.rake.setPosition(0.6);
-        }
-    }
-
-    public void openArms(Hardware hulk) throws InterruptedException
-    {
-        hulk.bArmLeft.setPosition(0);
-        Thread.sleep(700);
-        hulk.bArmRight.setPosition(0);
-        Thread.sleep(500);
-    }
-    public void closeArms(Hardware hulk) throws InterruptedException
-    {
-        hulk.bArmLeft.setPosition(.55);
-        hulk.bArmRight.setPosition(0.3);
-    }
+//    public void moveRake(char dir, Hardware hulk) throws  InterruptedException {
+//    if(dir == 'd')
+//        {
+//        hulk.rake.setPosition(.3);
+//        }
+//    else if(dir == 'u')
+//        {
+//        hulk.rake.setPosition(0.6);
+//        }
+//    }
+//
+//    public void openArms(Hardware hulk) throws InterruptedException
+//    {
+//        hulk.bArmLeft.setPosition(0);
+//        Thread.sleep(700);
+//        hulk.bArmRight.setPosition(0);
+//        Thread.sleep(500);
+//    }
+//    public void closeArms(Hardware hulk) throws InterruptedException
+//    {
+//        hulk.bArmLeft.setPosition(.55);
+//        hulk.bArmRight.setPosition(0.3);
+//    }
 
 
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class Hardware {
 
-    public ArrayList<DcMotor> wheels = new ArrayList<>();
+    ArrayList<DcMotor> wheels = new ArrayList<>();
 
     // DEVICES
     DcMotor frontRight;
@@ -20,13 +21,14 @@ public class Hardware {
     DcMotor backLeft;
 
     // MECHANISMS
-    CRServo flip;
-    Servo bArmRight;
-    Servo bArmLeft;
-    CRServo lock;
-    Servo rake;
+    Servo foundationArmL;
+    Servo foundationArmR;
 
-    DcMotor lift;
+    DcMotor intakeWheelL;
+    DcMotor intakeWheelR;
+
+    // SENSORS
+    ColorSensor colorSensor;
 
     private BNO055IMU imu;
 
@@ -62,13 +64,13 @@ public class Hardware {
         backRight = hwMap.dcMotor.get("backRight");
         backLeft = hwMap.dcMotor.get("backLeft");
 
-        bArmRight = hwMap.servo.get("bArmRight");
-        bArmLeft = hwMap.servo.get("bArmLeft");
-        flip = hwMap.crservo.get("flip");
-        lock = hwMap.crservo.get("lock");
+        foundationArmL = hwMap.servo.get("foundationArmL");
+        foundationArmR = hwMap.servo.get("foundationArmR");
 
-        lift = hwMap.dcMotor.get("lift");
-        rake = hwMap.servo.get("rake");
+        colorSensor = hwMap.colorSensor.get("colorSensor");
+
+        intakeWheelL = hwMap.dcMotor.get("intakeWheelL");
+        intakeWheelR = hwMap.dcMotor.get("intakeWheelR");
 
     }
 
@@ -106,12 +108,11 @@ public class Hardware {
         wheels.add(backLeft);
         wheels.add(backRight);
 
-        bArmRight.setDirection(Servo.Direction.FORWARD);
-        bArmLeft.setDirection(Servo.Direction.REVERSE);
-        rake.setDirection(Servo.Direction.FORWARD);
-        flip.setDirection(CRServo.Direction.FORWARD);
+        foundationArmR.setDirection(Servo.Direction.FORWARD);
+        foundationArmL.setDirection(Servo.Direction.REVERSE);
 
-        lift.setDirection(DcMotor.Direction.REVERSE);
+        intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
+        intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
     }
 
     private void initDefaultPosition() throws InterruptedException {
@@ -120,9 +121,12 @@ public class Hardware {
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        lock.setPower(0.5);
-        Thread.sleep(500);
-        lock.setPower(0);
+
+        intakeWheelL.setPower(0);
+        intakeWheelR.setPower(0);
+
+        foundationArmL.setPosition(0);
+        foundationArmR.setPosition(0);
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {
