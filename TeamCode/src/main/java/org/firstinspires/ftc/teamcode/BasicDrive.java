@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
@@ -15,20 +19,24 @@ public class BasicDrive extends LinearOpMode {
 
         double maxPower = .75;
 
-        boolean rakeIsLowered = false;
-        int rakeButtonCD = 0;
-        int lockButtonCD = 0;
+       //boolean rakeIsLowered = false;
+        //int rakeButtonCD = 0;
+        //int lockButtonCD = 0;
         int slowModeButtonCD = 0;
-        boolean bArmIsClosed = false;
+        //boolean bArmIsClosed = false;
+        boolean fArmIsDown = false;
         boolean isLocked = false;
-        int bArmButtonCD = 0;
+        int fArmButtonCD = 0;
 
         waitForStart();
 
         while (opModeIsActive()) {
 
+
+
+
             // DRIVE ====================================================                                                              Wheel vectors
-            // Wonky mecanum wheel code-- don't need to touch it 'cos it works, that's all that we have to care about.                 135 degrees  45 degrees
+            //                                                                                                                      135 degrees  45 degrees
 
             double forward = Math.abs(gamepad1.left_stick_y) > 0.2 ? -gamepad1.left_stick_y : 0;
             double clockwise = Math.abs(gamepad1.left_stick_x) > 0.2 ? -gamepad1.left_stick_x : 0;                                  // 45 degrees   135 degrees
@@ -48,7 +56,7 @@ public class BasicDrive extends LinearOpMode {
 
             // BUTTONS ==================================================
 
-            // Gamepad 1 - Driver
+            // Gamepad 1 - Driver + Intake
             if (slowModeButtonCD == 0 && gamepad1.right_bumper) {
                 if (maxPower == 0.75) {
                     maxPower = 0.375;
@@ -58,16 +66,55 @@ public class BasicDrive extends LinearOpMode {
                 slowModeButtonCD = 12;
             }
 
-
-
-            // Gamepad 2 - Operator
-
-            if (gamepad2.left_trigger > 0.2) {
-                h.intakeWheelL.setPower(0.5);
-                h.intakeWheelR.setPower(0.5);
+            if (gamepad1.right_trigger > 0.2) {
+                h.intakeWheelL.setPower(0.4);
+                h.intakeWheelR.setPower(0.4);
             } else {
                 h.intakeWheelL.setPower(0);
                 h.intakeWheelR.setPower(0);
+            }
+
+
+            // Gamepad 2 - Lift + Foundation Arm
+
+
+            if(fArmButtonCD == 0 && gamepad2.a) {
+                if (!fArmIsDown) {
+                    h.foundationArmL.setPosition(1);
+                    h.foundationArmR.setPosition(1);
+                    fArmIsDown = true;
+                } else {
+                    h.foundationArmL.setPosition(0);
+                    h.foundationArmR.setPosition(0);
+                    fArmIsDown = false;
+                }
+                fArmButtonCD = 12;
+            }
+
+
+            if(gamepad2.right_trigger > 0.2) {
+                h.liftMotorR.setTargetPosition(99999999);
+               h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                h.liftMotorR.setPower(1);
+                h.liftMotorL.setTargetPosition(99999999); // big
+                h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                h.liftMotorL.setPower(.083);
+            }
+            else if(gamepad2.right_trigger < 0.2)
+            {
+           h.liftMotorR.setPower(0);
+            h.liftMotorL.setPower(0);
+            }
+
+            if(gamepad2.b) {
+
+                 h.liftMotorR.setTargetPosition(0);
+                   h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                   h.liftMotorR.setPower(-1);
+                    h.liftMotorL.setTargetPosition(0);
+                    h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    h.liftMotorL.setPower(-.083);
+
             }
 //            // Butterfly arms
 //            if(bArmButtonCD == 0 && gamepad2.a) {
@@ -142,40 +189,40 @@ public class BasicDrive extends LinearOpMode {
 //            }
 //
 //            // Probably should go in Autonomous somewhere
-////            if (gamepad1.left_bumper) {
-////                h.flip.setPosition(0.8);
-////                h.lock.setPosition(0.3);
-////                Thread.sleep(2000);
-////                h.lift.setPower(1);
-////                Thread.sleep(2000);
-////                h.flip.setPosition(0);
-////                Thread.sleep(5000);
-////                h.flip.setPosition(0.8);
-////                h.lift.setPower(0.5);
-////            }
-//
-//            // TELEMETRY STATEMENTS
-//
-//
-//            telemetry.addData("Position of Servo", h.bArmLeft.getPosition());
-//            telemetry.addData("Position of Servo", h.bArmRight.getPosition());
-//            telemetry.addData("Left Trigger", gamepad2.left_trigger);
-//            telemetry.addData("Right Trigger", gamepad2.right_trigger);
-//            telemetry.update();
-//            // Adds everything to telemetry
-//
-//            if (rakeButtonCD > 0) {
-//                rakeButtonCD--;
+//            if (gamepad1.left_bumper) {
+//                h.flip.setPosition(0.8);
+//                h.lock.setPosition(0.3);
+//                Thread.sleep(2000);
+//                h.lift.setPower(1);
+//                Thread.sleep(2000);
+//                h.flip.setPosition(0);
+//                Thread.sleep(5000);
+//                h.flip.setPosition(0.8);
+//                h.lift.setPower(0.5);
 //            }
-//            if (slowModeButtonCD > 0) {
-//                slowModeButtonCD--;
-//            }
-//            if (bArmButtonCD > 0) {
-//                bArmButtonCD--;
-//            }
-//            if (lockButtonCD > 0) {
-//                lockButtonCD--;
-//            }
+//
+            // TELEMETRY STATEMENTS
+
+
+            telemetry.addData("Position of Servo", h.foundationArmR.getPosition());
+            telemetry.addData("Position of Servo", h.foundationArmL.getPosition());
+            telemetry.addData("Alpha", h.color.alpha());
+            telemetry.addData("Red  ", h.color.red());
+            telemetry.addData("Green", h.color.green());
+            telemetry.addData("Blue ", h.color.blue());
+
+
+            telemetry.update();
+            // Adds everything to telemetry
+
+
+
+            if (slowModeButtonCD > 0) {
+                slowModeButtonCD--;
+            }
+            if (fArmButtonCD > 0) {
+                fArmButtonCD--;
+            }
 
             h.waitForTick(40);
             // Stops phone from queuing too many commands and breaking

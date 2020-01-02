@@ -15,20 +15,26 @@ public class Hardware {
     ArrayList<DcMotor> wheels = new ArrayList<>();
 
     // DEVICES
-    DcMotor frontRight;
-    DcMotor frontLeft;
-    DcMotor backRight;
-    DcMotor backLeft;
+    DcMotor frontRight;     // Hub 3 Slot 0
+    DcMotor frontLeft;      // Hub 2 Slot 0
+    DcMotor backRight;      // Hub 3 Slot 1
+    DcMotor backLeft;       // Hub 2 Slot 1
 
     // MECHANISMS
-    Servo foundationArmL;
-    Servo foundationArmR;
+    Servo foundationArmL;   // Hub 3 Servo Slot 5
+    Servo foundationArmR;   // Hub 3 Servo Slot 0
+    Servo flip;             // Hub 3 Servo Slot 3
+    Servo claw;             // Hub 3 Servo Slot 1
+    CRServo horizontal;     // Hub 3 Servo Slot 2
 
-    DcMotor intakeWheelL;
-    DcMotor intakeWheelR;
+    DcMotor intakeWheelL;   // Hub 2 Slot 3
+    DcMotor intakeWheelR;   // Hub 3 Slot 3
+
+    DcMotor liftMotorL;     // Hub 2 Slot 2
+    DcMotor liftMotorR;     // Hub 3 Slot 3
 
     // SENSORS
-    ColorSensor colorSensor;
+    ColorSensor color;      //Hub 3 I2C Bus 1 Name: 'colorSensor'
 
     private BNO055IMU imu;
 
@@ -66,53 +72,64 @@ public class Hardware {
 
         foundationArmL = hwMap.servo.get("foundationArmL");
         foundationArmR = hwMap.servo.get("foundationArmR");
+        claw = hwMap.servo.get("claw");
+        horizontal = hwMap.crservo.get("horizontal");
+        flip = hwMap.servo.get("flip");
 
-        colorSensor = hwMap.colorSensor.get("colorSensor");
+
+
+
+        color = hwMap.colorSensor.get("colorSensor");
 
         intakeWheelL = hwMap.dcMotor.get("intakeWheelL");
         intakeWheelR = hwMap.dcMotor.get("intakeWheelR");
+
+        liftMotorL = hwMap.dcMotor.get("liftMotorL");
+        liftMotorR = hwMap.dcMotor.get("liftMotorR");
 
     }
 
     private void initMotorSettings(boolean initAuto) {
         // Set motor Mode and Direction
 
-        if (!initAuto) {
-            // Init basic drive. Simply set motor power.
+
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        } else {
-            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontRight.setTargetPosition(0);
-            frontLeft.setTargetPosition(0);
-            backRight.setTargetPosition(0);
-            backLeft.setTargetPosition(0);
-            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
 
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
+            intakeWheelL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            intakeWheelR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        wheels.add(frontLeft);
-        wheels.add(frontRight);
-        wheels.add(backLeft);
-        wheels.add(backRight);
+            liftMotorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftMotorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            liftMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        foundationArmR.setDirection(Servo.Direction.FORWARD);
-        foundationArmL.setDirection(Servo.Direction.REVERSE);
 
-        intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
-        intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotor.Direction.FORWARD);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
+            backLeft.setDirection(DcMotor.Direction.FORWARD);
+
+            wheels.add(frontLeft);
+            wheels.add(frontRight);
+            wheels.add(backLeft);
+            wheels.add(backRight);
+
+            foundationArmR.setDirection(Servo.Direction.FORWARD);
+            foundationArmL.setDirection(Servo.Direction.REVERSE);
+
+        claw.setDirection(Servo.Direction.FORWARD);
+        horizontal.setDirection(CRServo.Direction.FORWARD);
+        flip.setDirection(Servo.Direction.FORWARD);
+
+            intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
+            intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
+
+            liftMotorR.setDirection(DcMotor.Direction.FORWARD);
+            liftMotorL.setDirection(DcMotor.Direction.FORWARD);
+
     }
 
     private void initDefaultPosition() throws InterruptedException {
@@ -127,6 +144,9 @@ public class Hardware {
 
         foundationArmL.setPosition(0);
         foundationArmR.setPosition(0);
+
+        liftMotorL.setPower(0);
+        liftMotorR.setPower(0);
     }
 
     public void waitForTick(long periodMs) throws InterruptedException {

@@ -188,6 +188,10 @@ public class AutonomousTools {
 
     private int getTicks(int inches) {
         return (int)(TICKS_PER_REV / IN_PER_REV / GEAR_RATIO * inches);
+
+
+
+        
     }
 
     private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
