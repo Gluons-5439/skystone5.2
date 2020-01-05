@@ -301,7 +301,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
                     .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                     .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        /**  Let all the trackable listeners know where the phone is.  */
+        /*  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }

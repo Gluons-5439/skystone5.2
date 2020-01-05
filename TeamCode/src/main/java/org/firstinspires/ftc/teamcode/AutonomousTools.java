@@ -4,12 +4,18 @@ import android.support.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.ArrayList;
 
@@ -24,6 +30,9 @@ public class AutonomousTools {
     static final String LABEL_STONE = "Stone";
     static final String LABEL_SKYSTONE = "Skystone";
 
+    Orientation lastAngles = new Orientation();
+    double globalAngle, correction;
+
     VuforiaLocalizer vuforia;
     TFObjectDetector tfod;
 
@@ -35,14 +44,7 @@ public class AutonomousTools {
     // New encoder stuff!
     // ================================================================
 
-    public enum MoveStyle {
-        STRAIGHT_FORWARD,
-        STRAIGHT_BACK,
-        STRAFE_RIGHT,
-        STRAFE_LEFT,
-        POINT_TURN_LEFT,
-        POINT_TURN_RIGHT
-    }
+
 
 //    /**
 //     * Public method to move the robot using encoder position.
@@ -75,11 +77,11 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = getTicks(inches);
-
-        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h, telemetry);
-    }
+//    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = getTicks(inches);
+//
+//        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h, telemetry);
+//    }
 
     /**
      * Strafe right a specified distance.
@@ -87,11 +89,11 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStrafeRight(int inches, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = getTicks(inches);
-
-        moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h, telemetry);
-    }
+//    void moveStrafeRight(int inches, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = getTicks(inches);
+//
+//        moveDistInTicks(MoveStyle.STRAFE_RIGHT, ticks, h, telemetry);
+//    }
 
     /**
      * Strafe left a specified distance.
@@ -99,11 +101,11 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-    void moveStrafeLeft(int inches, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = getTicks(inches);
-
-        moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h, telemetry);
-    }
+//    void moveStrafeLeft(int inches, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = getTicks(inches);
+//
+//        moveDistInTicks(MoveStyle.STRAFE_LEFT, ticks, h, telemetry);
+//    }
 
     /**
      * Point turn to the right.
@@ -111,11 +113,11 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    void moveTurnRight(int degrees, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
-
-        moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h, telemetry);
-    }
+//    void moveTurnRight(int degrees, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
+//
+//        moveDistInTicks(MoveStyle.POINT_TURN_RIGHT, ticks, h, telemetry);
+//    }
 
     /**
      * Point turn to the left.
@@ -123,11 +125,11 @@ public class AutonomousTools {
      * @param degrees The angle to turn relative to the robot, in degrees.
      * @param h The Hardware class with the motors.
      */
-    void moveTurnLeft(int degrees, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
-
-        moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h, telemetry);
-    }
+//    void moveTurnLeft(int degrees, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = (int)(TICKS_PER_REV / IN_PER_REV * WHEEL_RADIUS / GEAR_RATIO * degrees * Math.PI / 180);
+//
+//        moveDistInTicks(MoveStyle.POINT_TURN_LEFT, ticks, h, telemetry);
+//    }
 
     /**
      * Start the motors to move forwards.
@@ -136,13 +138,13 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      * @param isReverse Whether the robot should instead move backwards.
      */
-    void startMoveStraight(double speed, @NonNull Hardware h, boolean isReverse) {
-        if (isReverse) {
-            startMotors(speed, MoveStyle.STRAIGHT_BACK, h);
-        } else {
-            startMotors(speed, MoveStyle.STRAIGHT_FORWARD, h);
-        }
-    }
+//    void startMoveStraight(double speed, @NonNull Hardware h, boolean isReverse) {
+//        if (isReverse) {
+//            startMotors(speed, MoveStyle.STRAIGHT_BACK, h);
+//        } else {
+//            startMotors(speed, MoveStyle.STRAIGHT_FORWARD, h);
+//        }
+//    }
 
     /**
      * Start the motors to strafe to the right.
@@ -151,13 +153,13 @@ public class AutonomousTools {
      * @param h The Hardware class with the motors.
      * @param isReverse Whether the robot should instead strafe to the left.
      */
-    void startMoveStrafe(double speed, @NonNull Hardware h, boolean isReverse) {
-        if (isReverse) {
-            startMotors(speed, MoveStyle.STRAFE_RIGHT, h);
-        } else {
-            startMotors(speed, MoveStyle.STRAFE_LEFT, h);
-        }
-    }
+//    void startMoveStrafe(double speed, @NonNull Hardware h, boolean isReverse) {
+//        if (isReverse) {
+//            startMotors(speed, MoveStyle.STRAFE_RIGHT, h);
+//        } else {
+//            startMotors(speed, MoveStyle.STRAFE_LEFT, h);
+//        }
+//    }
 
     /**
      * Start the motors to turn on point to the right.
@@ -166,13 +168,13 @@ public class AutonomousTools {
      * @param speed The power of the motors.
      * @param isReverse Whether the robot should instead turn to the left.
      */
-    void startMoveTurn(double speed, @NonNull Hardware h, boolean isReverse) {
-        if (isReverse) {
-            startMotors(speed, MoveStyle.POINT_TURN_RIGHT, h);
-        } else {
-            startMotors(speed, MoveStyle.POINT_TURN_LEFT, h);
-        }
-    }
+//    void startMoveTurn(double speed, @NonNull Hardware h, boolean isReverse) {
+//        if (isReverse) {
+//            startMotors(speed, MoveStyle.POINT_TURN_RIGHT, h);
+//        } else {
+//            startMotors(speed, MoveStyle.POINT_TURN_LEFT, h);
+//        }
+//    }
 
     /**
      * Stops the motors.
@@ -186,54 +188,148 @@ public class AutonomousTools {
         }
     }
 
-    private int getTicks(int inches) {
+    public int getTicks(int inches) {
         return (int)(TICKS_PER_REV / IN_PER_REV / GEAR_RATIO * inches);
 
-
-
-        
     }
 
-    private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
-        ArrayList<Integer> motorDirs = new ArrayList<>();
+    public double checkDirection(Hardware h)
+    {
+        // The gain value determines how sensitive the correction is to direction changes.
+        // You will have to experiment with your robot to get small smooth direction changes
+        // to stay on a straight line.
+        double correction, angle, gain = .10;
 
-        switch (moveStyle) {
-            case STRAIGHT_FORWARD:
-                motorDirs.add(1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(1);
-                break;
-            case STRAIGHT_BACK:
-                motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1);
-                break;
-            case STRAFE_RIGHT:
-                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(-1);
-                break;
-            case STRAFE_LEFT:
-                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(1);
-                break;
-            case POINT_TURN_RIGHT:
-                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1);
-                break;
-            case POINT_TURN_LEFT:
-                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1);
-                break;
+        angle = getAngle(h);
+
+        if (angle == 0)
+            correction = 0;             // no adjustment.
+        else
+            correction = -angle;        // reverse sign of angle for correction.
+
+        correction = correction * gain;
+
+        return correction;
+    }
+    public void resetAngle(Hardware h)
+    {
+        lastAngles = h.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
+    }
+
+    public double getAngle(Hardware h)
+    {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = h.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+    public void turnDegrees(int degrees, char dir, double power, Hardware h) throws InterruptedException
+    {
+
+        // restart imu movement tracking.
+        resetAngle(h);
+        int leftPower, rightPower;
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        if (dir == 'r')
+        {   // turn right.
+            leftPower = 1;
+            rightPower = -1;
         }
-
-        return motorDirs;
-    }
-
-    private void startMotors(double speed, @NonNull MoveStyle moveStyle, @NonNull Hardware h) {
-        ArrayList<Integer> motorDirs = getDirs(moveStyle);
-
-        for (int i = 0; i < h.wheels.size(); i++) {
-            h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            h.wheels.get(i).setPower(motorDirs.get(i) * speed);
+        else if (dir == 'l')
+        {   // turn left.
+            leftPower = -1;
+            rightPower = 1;
         }
+        else return;
+
+        // set power to rotate.
+        h.frontLeft.setPower(leftPower * power);
+        h.backLeft.setPower(leftPower * power);
+        h.frontRight.setPower(rightPower * power);
+        h.backRight.setPower(rightPower * power);
+
+        // rotate until turn is completed.
+        if (degrees < 0)
+        {
+            // On right turn we have to get off zero first.
+            while (getAngle(h) == 0) {}
+
+            while (getAngle(h) > degrees) {}
+        }
+        else    // left turn.
+            while (getAngle(h) < degrees) {}
+
+        // turn the motors off.
+        h.frontRight.setPower(0);
+        h.frontLeft.setPower(0);
+        h.backRight.setPower(0);
+        h.backLeft.setPower(0);
+
+
+        // wait for rotation to stop.
+        Thread.sleep(1000);
+
+        // reset angle tracking on new heading.
+        resetAngle(h);
     }
 
-    private void moveDistInTicks(@NonNull MoveStyle moveStyle, int ticks, @NonNull Hardware h, Telemetry telemetry) {
-        ArrayList<Integer> motorDirs = getDirs(moveStyle);
+//    private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
+//        ArrayList<Integer> motorDirs = new ArrayList<>();
+//
+//        switch (moveStyle) {
+//            case STRAIGHT_FORWARD:
+//                motorDirs.add(1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(1);
+//                break;
+//            case STRAIGHT_BACK:
+//                motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(-1);
+//                break;
+//            case STRAFE_RIGHT:
+//                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(1); motorDirs.add(-1);
+//                break;
+//            case STRAFE_LEFT:
+//                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(-1); motorDirs.add(1);
+//                break;
+//            case POINT_TURN_RIGHT:
+//                motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1);
+//                break;
+//            case POINT_TURN_LEFT:
+//                motorDirs.add(1); motorDirs.add(-1); motorDirs.add(1); motorDirs.add(-1);
+//                break;
+//        }
+//
+//        return motorDirs;
+//        }
 
+//    private void startMotors(double speed, @NonNull MoveStyle moveStyle, @NonNull Hardware h) {
+//        ArrayList<Integer> motorDirs = getDirs(moveStyle);
+//
+//        for (int i = 0; i < h.wheels.size(); i++) {
+//            h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            h.wheels.get(i).setPower(motorDirs.get(i) * speed);
+//        }
+//    }
+
+    private void moveDistInTicks(int ticks, @NonNull Hardware h, Telemetry telemetry) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             h.wheels.get(i).setTargetPosition(motorDirs.get(i) * ticks);
@@ -243,10 +339,8 @@ public class AutonomousTools {
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy()) {
             for (int j = 0; j < h.wheels.size(); j ++ ) {
-                telemetry.addData("Motor " + j + " direction: ", motorDirs.get(j));
                 telemetry.addData("Motor " + j + " power: ", h.wheels.get(j).getPower());
                 telemetry.addData("Motor " + j + " position: ", h.wheels.get(j).getCurrentPosition());
-                telemetry.addData("Motor " + j + " destination: ", motorDirs.get(j) * ticks);
                 telemetry.addData("Motor " + j + " dest. actual: ", h.wheels.get(j).getTargetPosition());
             }
             telemetry.update();
@@ -434,7 +528,7 @@ public class AutonomousTools {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforia);
         this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
-        tfodParameters.minimumConfidence = 0.6;
+        tfodParameters.minimumConfidence = 0.4;
     }
 
 //    public void moveRake(char dir, Hardware hulk) throws  InterruptedException {

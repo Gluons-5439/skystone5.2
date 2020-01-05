@@ -26,6 +26,7 @@ public class Hardware {
     Servo flip;             // Hub 3 Servo Slot 3
     Servo claw;             // Hub 3 Servo Slot 1
     CRServo horizontal;     // Hub 3 Servo Slot 2
+    Servo cap;              // Hub 3 Servo Slot 4
 
     DcMotor intakeWheelL;   // Hub 2 Slot 3
     DcMotor intakeWheelR;   // Hub 3 Slot 3
@@ -36,7 +37,7 @@ public class Hardware {
     // SENSORS
     ColorSensor color;      //Hub 3 I2C Bus 1 Name: 'colorSensor'
 
-    private BNO055IMU imu;
+    public BNO055IMU imu;
 
     HardwareMap hwMap;
     private ElapsedTime period = new ElapsedTime();
@@ -75,6 +76,7 @@ public class Hardware {
         claw = hwMap.servo.get("claw");
         horizontal = hwMap.crservo.get("horizontal");
         flip = hwMap.servo.get("flip");
+        cap = hwMap.servo.get("cap");
 
 
 
@@ -93,10 +95,14 @@ public class Hardware {
         // Set motor Mode and Direction
 
 
-            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             intakeWheelL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             intakeWheelR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -112,6 +118,12 @@ public class Hardware {
             backRight.setDirection(DcMotor.Direction.REVERSE);
             backLeft.setDirection(DcMotor.Direction.FORWARD);
 
+        intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
+        intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
+
+        liftMotorR.setDirection(DcMotor.Direction.FORWARD);
+        liftMotorL.setDirection(DcMotor.Direction.FORWARD);
+
             wheels.add(frontLeft);
             wheels.add(frontRight);
             wheels.add(backLeft);
@@ -123,12 +135,9 @@ public class Hardware {
         claw.setDirection(Servo.Direction.FORWARD);
         horizontal.setDirection(CRServo.Direction.FORWARD);
         flip.setDirection(Servo.Direction.FORWARD);
+        cap.setDirection(Servo.Direction.FORWARD);
 
-            intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
-            intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
 
-            liftMotorR.setDirection(DcMotor.Direction.FORWARD);
-            liftMotorL.setDirection(DcMotor.Direction.FORWARD);
 
     }
 

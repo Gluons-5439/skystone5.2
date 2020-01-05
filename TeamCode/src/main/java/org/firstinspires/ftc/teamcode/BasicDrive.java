@@ -27,6 +27,15 @@ public class BasicDrive extends LinearOpMode {
         boolean fArmIsDown = false;
         boolean isLocked = false;
         int fArmButtonCD = 0;
+        int  cArmButtonCD = 0;
+        boolean cArmIsClosed = true;
+        h.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+
 
         waitForStart();
 
@@ -75,10 +84,10 @@ public class BasicDrive extends LinearOpMode {
             }
 
 
-            // Gamepad 2 - Lift + Foundation Arm
+            // Gamepad 2 - Functions
 
-
-            if(fArmButtonCD == 0 && gamepad2.a) {
+            //Foundation Arms
+            if(fArmButtonCD == 0 && gamepad2.y) {
                 if (!fArmIsDown) {
                     h.foundationArmL.setPosition(1);
                     h.foundationArmR.setPosition(1);
@@ -91,31 +100,66 @@ public class BasicDrive extends LinearOpMode {
                 fArmButtonCD = 12;
             }
 
-
+            //Lift
             if(gamepad2.right_trigger > 0.2) {
-                h.liftMotorR.setTargetPosition(99999999);
-               h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                h.liftMotorR.setTargetPosition(99999999); //large amount
+                h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 h.liftMotorR.setPower(1);
-                h.liftMotorL.setTargetPosition(99999999); // big
+                h.liftMotorL.setTargetPosition(h.liftMotorR.getCurrentPosition());
                 h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                h.liftMotorL.setPower(.083);
+                h.liftMotorL.setPower(1);
             }
             else if(gamepad2.right_trigger < 0.2)
             {
-           h.liftMotorR.setPower(0);
-            h.liftMotorL.setPower(0);
+                h.liftMotorR.setPower(0);
+                h.liftMotorL.setPower(0);
+
             }
 
-            if(gamepad2.b) {
+            if(gamepad2.left_trigger > 0.2) {
 
-                 h.liftMotorR.setTargetPosition(0);
-                   h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                   h.liftMotorR.setPower(-1);
+
+                    h.liftMotorR.setTargetPosition(0);
                     h.liftMotorL.setTargetPosition(0);
+                    h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    h.liftMotorL.setPower(-.083);
-
+                    h.liftMotorL.setPower(-1);
+                    h.liftMotorR.setPower(-1);
             }
+            else if(gamepad2.left_trigger < 0.2)
+            {
+
+                h.liftMotorR.setPower(0);
+                h.liftMotorL.setPower(0);
+            }
+
+
+            //Claw
+            if(cArmButtonCD == 0 && gamepad2.a) {
+                if (!cArmIsClosed) {
+                    h.claw.setPosition(1);
+                    cArmIsClosed = true;
+                } else {
+                    h.claw.setPosition(0.8);
+                    cArmIsClosed = false;
+                }
+                cArmButtonCD = 12;
+            }
+
+            if(gamepad2.dpad_right)
+            {
+                h.horizontal.setPower(1);
+            }
+            else if(gamepad2.dpad_left)
+            {
+                h.horizontal.setPower(-1);
+            }
+            else
+            {
+                h.horizontal.setPower(0);
+            }
+
 //            // Butterfly arms
 //            if(bArmButtonCD == 0 && gamepad2.a) {
 //                if (!bArmIsClosed) {
@@ -222,6 +266,9 @@ public class BasicDrive extends LinearOpMode {
             }
             if (fArmButtonCD > 0) {
                 fArmButtonCD--;
+            }
+            if (cArmButtonCD > 0) {
+                cArmButtonCD--;
             }
 
             h.waitForTick(40);
