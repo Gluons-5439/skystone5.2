@@ -55,7 +55,7 @@ public class BlueAuto extends LinearOpMode {
 //                telemetry.update();
 //            }
             robot.turnDegrees(90,'l',0.4,hardware);
-            robot.moveForward(500,0.7,hardware);
+            robot.moveStraightForward(24, hardware, telemetry);
             Thread.sleep(1000);
         }
     }

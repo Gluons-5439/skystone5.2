@@ -107,10 +107,8 @@ public class Hardware {
             intakeWheelL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             intakeWheelR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            liftMotorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            liftMotorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            liftMotorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftMotorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             frontRight.setDirection(DcMotor.Direction.REVERSE);

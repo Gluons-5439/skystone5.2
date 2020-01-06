@@ -64,20 +64,14 @@ public class SetupProgram extends LinearOpMode {
 
 
             if(gamepad1.right_trigger > 0.2) {
-               // robot.liftMotorR.setTargetPosition(99999999);
-                //robot.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.liftMotorR.setPower(1);
-
             }
             else if(gamepad1.right_trigger < 0.2)
             {
                 robot.liftMotorR.setPower(0);
-
             }
 
             if(gamepad1.left_trigger > 0.2) {
-              //  robot.liftMotorL.setTargetPosition(99999999); // big
-              //  robot.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.liftMotorL.setPower(1);
             }
             else if(gamepad1.left_trigger < 0.2)
@@ -85,23 +79,15 @@ public class SetupProgram extends LinearOpMode {
                 robot.liftMotorL.setPower(0);
             }
 
-
-
             if(gamepad2.right_trigger > 0.2) {
-             //   robot.liftMotorR.setTargetPosition(-99999999);
-             //   robot.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.liftMotorR.setPower(-1);
-
             }
             else if(gamepad2.right_trigger < 0.2)
             {
                 robot.liftMotorR.setPower(0);
-
             }
 
             if(gamepad2.left_trigger > 0.2) {
-             //   robot.liftMotorL.setTargetPosition(-99999999); // big
-              //  robot.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 robot.liftMotorL.setPower(-1);
             }
             else if(gamepad2.left_trigger < 0.2)

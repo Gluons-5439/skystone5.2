@@ -29,13 +29,14 @@ public class BasicDrive extends LinearOpMode {
         int fArmButtonCD = 0;
         int  cArmButtonCD = 0;
         boolean cArmIsClosed = true;
+        int capCD = 0;
+        boolean capIsDown = false;
+        int flipArmButtonCD = 0;
+        boolean flipIsOut = false;
         h.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         h.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         h.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         h.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-
 
         waitForStart();
 
@@ -87,7 +88,7 @@ public class BasicDrive extends LinearOpMode {
             // Gamepad 2 - Functions
 
             //Foundation Arms
-            if(fArmButtonCD == 0 && gamepad2.y) {
+            if(fArmButtonCD == 0 && gamepad1.a) {
                 if (!fArmIsDown) {
                     h.foundationArmL.setPosition(1);
                     h.foundationArmR.setPosition(1);
@@ -101,38 +102,24 @@ public class BasicDrive extends LinearOpMode {
             }
 
             //Lift
-            if(gamepad2.right_trigger > 0.2) {
-
-                h.liftMotorR.setTargetPosition(99999999); //large amount
-                h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if(gamepad2.right_trigger > 0.2)
                 h.liftMotorR.setPower(1);
-                h.liftMotorL.setTargetPosition(h.liftMotorR.getCurrentPosition());
-                h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                h.liftMotorL.setPower(1);
-            }
             else if(gamepad2.right_trigger < 0.2)
-            {
                 h.liftMotorR.setPower(0);
-                h.liftMotorL.setPower(0);
 
-            }
-
-            if(gamepad2.left_trigger > 0.2) {
-
-
-                    h.liftMotorR.setTargetPosition(0);
-                    h.liftMotorL.setTargetPosition(0);
-                    h.liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    h.liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    h.liftMotorL.setPower(-1);
-                    h.liftMotorR.setPower(-1);
-            }
+            if(gamepad2.left_trigger > 0.2)
+                h.liftMotorL.setPower(1);
             else if(gamepad2.left_trigger < 0.2)
-            {
-
-                h.liftMotorR.setPower(0);
                 h.liftMotorL.setPower(0);
-            }
+
+            if(gamepad2.left_bumper)
+                h.liftMotorL.setPower(-1);
+            else
+                h.liftMotorR.setPower(0);
+            if(gamepad2.right_bumper)
+                h.liftMotorR.setPower(-1);
+            else
+                h.liftMotorL.setPower(0);
 
 
             //Claw
@@ -146,7 +133,7 @@ public class BasicDrive extends LinearOpMode {
                 }
                 cArmButtonCD = 12;
             }
-
+            //Horizontal Linear Slide
             if(gamepad2.dpad_right)
             {
                 h.horizontal.setPower(1);
@@ -159,6 +146,29 @@ public class BasicDrive extends LinearOpMode {
             {
                 h.horizontal.setPower(0);
             }
+            //Capstone
+            if(capCD == 0 && gamepad2.y) {
+                if (!capIsDown) {
+                    h.cap.setPosition(1);
+                    capIsDown = true;
+                } else {
+                    h.cap.setPosition(0);
+                    capIsDown = false;
+                }
+                capCD = 12;
+            }
+            //Flip
+            if(flipArmButtonCD == 0 && gamepad2.b) {
+                if (!flipIsOut) {
+                    h.flip.setPosition(1);
+                    flipIsOut = true;
+                } else {
+                    h.flip.setPosition(0);
+                    flipIsOut = false;
+                }
+                fArmButtonCD = 12;
+            }
+            
 
 //            // Butterfly arms
 //            if(bArmButtonCD == 0 && gamepad2.a) {
@@ -269,6 +279,12 @@ public class BasicDrive extends LinearOpMode {
             }
             if (cArmButtonCD > 0) {
                 cArmButtonCD--;
+            }
+            if (capCD > 0) {
+                capCD--;
+            }
+            if (flipArmButtonCD > 0) {
+                flipArmButtonCD--;
             }
 
             h.waitForTick(40);

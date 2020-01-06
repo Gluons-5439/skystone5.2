@@ -22,8 +22,9 @@ import java.util.ArrayList;
 public class AutonomousTools {
     private final double WHEEL_RADIUS = 2;  // Radius in inches
     private final double AUTO_POWER = 0.1;
-    private final int TICKS_PER_REV = 146;
+    private final double TICKS_PER_REV = 145.6 * 2; //2 from gear ratio
     private final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
+    private final double TICKS_PER_IN = 1 / (IN_PER_REV / TICKS_PER_REV);
     private final int GEAR_RATIO = 2;
 
     static final String TFOD_MODEL_ASSET = "Skystone.tflite";
@@ -68,7 +69,7 @@ public class AutonomousTools {
     void moveStraightForward(int inches, @NonNull Hardware h, Telemetry telemetry) {
         int ticks = getTicks(inches);
 
-        moveDistInTicks(MoveStyle.STRAIGHT_FORWARD, ticks, h, telemetry);
+        moveDistInTicks('f',ticks, h, telemetry);
     }
 
     /**
@@ -77,11 +78,11 @@ public class AutonomousTools {
      * @param inches The distance to move.
      * @param h The Hardware class with the motors.
      */
-//    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
-//        int ticks = getTicks(inches);
-//
-//        moveDistInTicks(MoveStyle.STRAIGHT_BACK, ticks, h, telemetry);
-//    }
+    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
+        int ticks = getTicks(inches);
+
+        moveDistInTicks('b', ticks, h, telemetry);
+    }
 
     /**
      * Strafe right a specified distance.
@@ -189,9 +190,10 @@ public class AutonomousTools {
     }
 
     public int getTicks(int inches) {
-        return (int)(TICKS_PER_REV / IN_PER_REV / GEAR_RATIO * inches);
+        return (int)(TICKS_PER_IN * inches);
 
     }
+    //Distance / Wheel Diameter * PI * Encoder Counts Per Rotation = Encoder Counts Per Distance
 
     public double checkDirection(Hardware h)
     {
@@ -242,10 +244,13 @@ public class AutonomousTools {
     }
     public void turnDegrees(int degrees, char dir, double power, Hardware h) throws InterruptedException
     {
-
+        h.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        h.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // restart imu movement tracking.
         resetAngle(h);
-        int leftPower, rightPower;
+        int leftPower = 0 , rightPower = 0;
         // getAngle() returns + when rotating counter clockwise (left) and - when rotating
         // clockwise (right).
 
@@ -259,7 +264,7 @@ public class AutonomousTools {
             leftPower = -1;
             rightPower = 1;
         }
-        else return;
+
 
         // set power to rotate.
         h.frontLeft.setPower(leftPower * power);
@@ -271,8 +276,6 @@ public class AutonomousTools {
         if (degrees < 0)
         {
             // On right turn we have to get off zero first.
-            while (getAngle(h) == 0) {}
-
             while (getAngle(h) > degrees) {}
         }
         else    // left turn.
@@ -290,6 +293,10 @@ public class AutonomousTools {
 
         // reset angle tracking on new heading.
         resetAngle(h);
+        h.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        h.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        h.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        h.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 //    private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
@@ -318,7 +325,7 @@ public class AutonomousTools {
 //
 //        return motorDirs;
 //        }
-
+//
 //    private void startMotors(double speed, @NonNull MoveStyle moveStyle, @NonNull Hardware h) {
 //        ArrayList<Integer> motorDirs = getDirs(moveStyle);
 //
@@ -329,12 +336,12 @@ public class AutonomousTools {
 //        }
 //    }
 
-    private void moveDistInTicks(int ticks, @NonNull Hardware h, Telemetry telemetry) {
+    private void moveDistInTicks(char dir, int ticks, @NonNull Hardware h, Telemetry telemetry) {
         for (int i = 0; i < h.wheels.size(); i ++ ) {
             h.wheels.get(i).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            h.wheels.get(i).setTargetPosition(motorDirs.get(i) * ticks);
+            h.wheels.get(i).setTargetPosition((dir == 'f' ? 1 : -1) * ticks);
             h.wheels.get(i).setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            h.wheels.get(i).setPower((moveStyle == MoveStyle.STRAFE_LEFT || moveStyle == MoveStyle.STRAFE_RIGHT ? 2 : 1) * motorDirs.get(i) * AUTO_POWER);
+            h.wheels.get(i).setPower((dir == 'f' ? 1 : -1) * AUTO_POWER);
         }
 
         while (h.frontLeft.isBusy() && h.frontRight.isBusy() && h.backLeft.isBusy() && h.backRight.isBusy()) {
