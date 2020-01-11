@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Setup Program", group = "TeleOp")
 
@@ -64,31 +65,41 @@ public class SetupProgram extends LinearOpMode {
 
 
             if(gamepad1.right_trigger > 0.2) {
+                robot.liftMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
                 robot.liftMotorR.setPower(1);
+
             }
             else if(gamepad1.right_trigger < 0.2)
             {
                 robot.liftMotorR.setPower(0);
+
             }
 
-            if(gamepad1.left_trigger > 0.2) {
+            if(gamepad2.left_trigger > 0.2)
+            {
+                robot.liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
                 robot.liftMotorL.setPower(1);
             }
-            else if(gamepad1.left_trigger < 0.2)
+            else if(gamepad2.left_trigger < 0.2)
             {
                 robot.liftMotorL.setPower(0);
             }
 
             if(gamepad2.right_trigger > 0.2) {
-                robot.liftMotorR.setPower(-1);
+                robot.liftMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.liftMotorR.setPower(1);
+
             }
             else if(gamepad2.right_trigger < 0.2)
             {
                 robot.liftMotorR.setPower(0);
+
             }
 
-            if(gamepad2.left_trigger > 0.2) {
-                robot.liftMotorL.setPower(-1);
+            if(gamepad2.left_trigger > 0.2)
+            {
+                robot.liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.liftMotorL.setPower(1);
             }
             else if(gamepad2.left_trigger < 0.2)
             {

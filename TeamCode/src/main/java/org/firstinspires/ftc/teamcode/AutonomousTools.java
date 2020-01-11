@@ -22,10 +22,10 @@ import java.util.ArrayList;
 public class AutonomousTools {
     private final double WHEEL_RADIUS = 2;  // Radius in inches
     private final double AUTO_POWER = 0.1;
-    private final double TICKS_PER_REV = 145.6 * 2; //2 from gear ratio
-    private final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
-    private final double TICKS_PER_IN = 1 / (IN_PER_REV / TICKS_PER_REV);
     private final int GEAR_RATIO = 2;
+    private final double TICKS_PER_REV = 145.6 * GEAR_RATIO;
+    private final double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
+    private final double TICKS_PER_IN = TICKS_PER_REV / IN_PER_REV;
 
     static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     static final String LABEL_STONE = "Stone";
@@ -258,6 +258,7 @@ public class AutonomousTools {
         {   // turn right.
             leftPower = 1;
             rightPower = -1;
+            degrees = -degrees;
         }
         else if (dir == 'l')
         {   // turn left.
@@ -276,10 +277,12 @@ public class AutonomousTools {
         if (degrees < 0)
         {
             // On right turn we have to get off zero first.
-            while (getAngle(h) > degrees) {}
+            while (getAngle(h) == 0);
+
+            while (getAngle(h) > degrees);
         }
         else    // left turn.
-            while (getAngle(h) < degrees) {}
+            while (getAngle(h) < degrees);
 
         // turn the motors off.
         h.frontRight.setPower(0);
@@ -293,10 +296,10 @@ public class AutonomousTools {
 
         // reset angle tracking on new heading.
         resetAngle(h);
-        h.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        h.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        h.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        h.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        h.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        h.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 //    private ArrayList<Integer> getDirs(@NonNull MoveStyle moveStyle) {
@@ -496,17 +499,17 @@ public class AutonomousTools {
 
         if (dir == 'l') {
 
-            hulk.frontRight.setPower(-.7);
-            hulk.frontLeft.setPower(.7);
-            hulk.backRight.setPower(.7);
-            hulk.backLeft.setPower(-.7);
+            hulk.frontRight.setPower(-.8);
+            hulk.frontLeft.setPower(.8);
+            hulk.backRight.setPower(.8);
+            hulk.backLeft.setPower(-.8);
         }
         else if (dir == 'r'){
 
-            hulk.frontRight.setPower(.7);
-            hulk.frontLeft.setPower(-.7);
-            hulk.backRight.setPower(-.7);
-            hulk.backLeft.setPower(.7);
+            hulk.frontRight.setPower(.8);
+            hulk.frontLeft.setPower(-.8);
+            hulk.backRight.setPower(-.8);
+            hulk.backLeft.setPower(.8);
         }
         Thread.sleep(time);
         hulk.frontRight.setPower(0);
@@ -535,7 +538,7 @@ public class AutonomousTools {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         this.tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, this.vuforia);
         this.tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_STONE, LABEL_SKYSTONE);
-        tfodParameters.minimumConfidence = 0.4;
+        tfodParameters.minimumConfidence = 0.6;
     }
 
 //    public void moveRake(char dir, Hardware hulk) throws  InterruptedException {

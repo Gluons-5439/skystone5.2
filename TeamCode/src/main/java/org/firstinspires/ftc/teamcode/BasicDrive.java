@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Basic Drive", group = "TeleOp")
@@ -52,7 +53,7 @@ public class BasicDrive extends LinearOpMode {
             double clockwise = Math.abs(gamepad1.left_stick_x) > 0.2 ? -gamepad1.left_stick_x : 0;                                  // 45 degrees   135 degrees
             double right = Math.abs(gamepad1.right_stick_x) > 0.2 ? gamepad1.right_stick_x : 0;
             //Math for drive relative to theta
-            clockwise *= -0.5;
+            clockwise *= -0.6;
 
             double fr = forward - clockwise + right;  //+
             double br = forward - clockwise - right;  //-
@@ -77,12 +78,13 @@ public class BasicDrive extends LinearOpMode {
             }
 
             if (gamepad1.right_trigger > 0.2) {
-                h.intakeWheelL.setPower(0.4);
-                h.intakeWheelR.setPower(0.4);
+                h.intakeWheelL.setPower(0.5);
+                h.intakeWheelR.setPower(0.5);
             } else {
                 h.intakeWheelL.setPower(0);
                 h.intakeWheelR.setPower(0);
             }
+
 
 
             // Gamepad 2 - Functions
@@ -102,33 +104,41 @@ public class BasicDrive extends LinearOpMode {
             }
 
             //Lift
-            if(gamepad2.right_trigger > 0.2)
+            if(gamepad2.right_trigger > 0.2) {
+                h.liftMotorL.setDirection(DcMotor.Direction.REVERSE);
+                h.liftMotorR.setDirection(DcMotor.Direction.REVERSE);
                 h.liftMotorR.setPower(1);
+                h.liftMotorL.setPower(1);
+            }
             else if(gamepad2.right_trigger < 0.2)
+            {
                 h.liftMotorR.setPower(0);
+                h.liftMotorL.setPower(0);
+            }
 
             if(gamepad2.left_trigger > 0.2)
+            {
+                h.liftMotorL.setDirection(DcMotor.Direction.FORWARD);
+                h.liftMotorR.setDirection(DcMotor.Direction.FORWARD);
+                h.liftMotorR.setPower(1);
                 h.liftMotorL.setPower(1);
+            }
             else if(gamepad2.left_trigger < 0.2)
-                h.liftMotorL.setPower(0);
-
-            if(gamepad2.left_bumper)
-                h.liftMotorL.setPower(-1);
-            else
+            {
                 h.liftMotorR.setPower(0);
-            if(gamepad2.right_bumper)
-                h.liftMotorR.setPower(-1);
-            else
                 h.liftMotorL.setPower(0);
+            }
+
+
 
 
             //Claw
             if(cArmButtonCD == 0 && gamepad2.a) {
                 if (!cArmIsClosed) {
-                    h.claw.setPosition(1);
+                    h.claw.setPosition(0.2);
                     cArmIsClosed = true;
                 } else {
-                    h.claw.setPosition(0.8);
+                    h.claw.setPosition(0);
                     cArmIsClosed = false;
                 }
                 cArmButtonCD = 12;
@@ -166,7 +176,7 @@ public class BasicDrive extends LinearOpMode {
                     h.flip.setPosition(0);
                     flipIsOut = false;
                 }
-                fArmButtonCD = 12;
+                flipArmButtonCD = 12;
             }
             
 
@@ -287,7 +297,7 @@ public class BasicDrive extends LinearOpMode {
                 flipArmButtonCD--;
             }
 
-            h.waitForTick(40);
+
             // Stops phone from queuing too many commands and breaking
             // 25 ticks/sec
         }

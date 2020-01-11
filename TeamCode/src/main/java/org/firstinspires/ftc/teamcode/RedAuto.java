@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
@@ -15,84 +16,81 @@ import java.util.concurrent.TimeUnit;
 public class RedAuto extends LinearOpMode {
 
     private Hardware hardware = new Hardware();
-    private AutonomousTools auto = new AutonomousTools();
+    private AutonomousTools robot = new AutonomousTools();
+
+    private final double fricRatio = 1;
 
     public void runOpMode() throws InterruptedException {
 
-//        auto.initSensors(hardwareMap);
-//        hardware.init(hardwareMap, false);
-//
-//
-//        waitForStart();
-//
-//        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-//        executor.schedule(new Runnable() {
-//            @Override
-//            public void run() {
-//                auto.tfod.deactivate();
-//            }
-//        }, 29, TimeUnit.SECONDS);
-//
-//        auto.strafe(750, 'l', hardware);
-//        auto.tfod.activate();
-//        auto.setMotorPower(0.2, -1, -1, -1, -1, hardware); // Make sure you account for friction and change
-//        if (auto.tfod != null) {
-//            boolean skyStoneFound = false;                                            // motor power if necessary
-//            while (!skyStoneFound) {
-//                List<Recognition> updatedRecognitions = auto.tfod.getUpdatedRecognitions();
-//                if (updatedRecognitions != null) {
-//                    telemetry.addData("Found ", updatedRecognitions.size());
-//                    for (Recognition recognition : updatedRecognitions) {
-//                        if (recognition.getLabel().equals(AutonomousTools.LABEL_SKYSTONE)) {
-//                            telemetry.addData("SKYSTONE FOUND", ' ');
-//                            skyStoneFound = true;
-//                            auto.setMotorPower(0, hardware);
-//                        }
-//                    }
-//                }
-//                telemetry.update();
-//            }
-//            auto.setMotorPower(0, hardware);
-//            Thread.sleep(1000);
-//        }
-//
-//        telemetry.update();
-//
-//        auto.strafe(700, 'l', hardware); //strafes to skystones
-//        Thread.sleep(333);
-//        auto.moveForward(250, 0.5, hardware);
-//        Thread.sleep(1000);
-//        //insert a little up or a little down depending on skystone pos
-//        auto.moveRake('d', hardware); //drops the rake
-//        Thread.sleep(1000);
-//        auto.strafe(1000, 'r', hardware);//pulls the stone out
-//        auto.moveRake('u', hardware);//lifts rake again
-//        Thread.sleep(1000);
-//        auto.moveForward(400, -.5, hardware); //goes behind stone
-//        auto.strafe(1000, 'l', hardware); //centers itself to the stone
-//        auto.openArms(hardware); //opens barms
-//        Thread.sleep(1000);
-//        auto.moveForward(400, .5, hardware); //gets close to the stone
-//        auto.closeArms(hardware); //closes arms
-//        Thread.sleep(1000);
-//        auto.moveForward(600, .6, hardware); //drives through the block to the other side
-//        auto.openArms(hardware); //releases block on other side
-//        auto.moveForward(1000, -.6, hardware); //drive back to back skystone
-//        auto.strafe(1000, 'l', hardware);//gets to stone
-//        auto.moveForward(250, 0.5, hardware); //gets to stone
-//        auto.moveRake('d',hardware);//drops rake
-//        auto.strafe(1000, 'r', hardware);//pulls the stone out
-//        auto.moveRake('u', hardware);//lifts rake again
-//        Thread.sleep(1000);
-//        auto.moveForward(400, -.5, hardware); //goes behind stone
-//        auto.strafe(1000, 'l', hardware); //centers itself to the stone
-//        auto.openArms(hardware); //opens barms
-//        Thread.sleep(1000);
-//        auto.moveForward(400, .5, hardware); //gets close to the stone
-//        auto.closeArms(hardware); //closes arms
-//        Thread.sleep(1000);
-//        auto.moveForward(1000, .6, hardware); //drives through the block to the other side
-//        auto.openArms(hardware); //releases block on other side
-//        auto.moveForward(200,-.5,hardware); // parks
+        robot.initSensors(hardwareMap);
+        hardware.init(hardwareMap, false);
+
+
+        waitForStart();
+
+        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                robot.tfod.deactivate();
+            }
+        }, 29, TimeUnit.SECONDS);
+
+//        robot.turnDegrees(90, 'l', 0.5, hardware);
+//        Thread.sleep(250);
+        robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
+        Thread.sleep(100);
+        robot.turnDegrees((int)(64 * fricRatio), 'r', 0.7, hardware);
+        Thread.sleep(100);
+
+        robot.tfod.activate();
+        robot.setMotorPower(0.225, 1, 1, 1, 1, hardware); // Make sure you account for friction and change
+        if (robot.tfod != null) {
+            boolean skyStoneFound = false;                                            // motor power if necessary
+            while (!skyStoneFound) {
+                List<Recognition> updatedRecognitions = robot.tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("Found ", updatedRecognitions.size());
+                    for (Recognition recognition : updatedRecognitions) {
+                        if (recognition.getLabel().equals(AutonomousTools.LABEL_SKYSTONE)) {
+                            telemetry.addData("SKYSTONE FOUND!", ' ');
+                            skyStoneFound = true;
+                            robot.setMotorPower(0, hardware);
+                        }
+                    }
+                }
+                telemetry.update();
+            }
+            robot.moveForward((int)(fricRatio * 500), -.6, hardware);
+            robot.turnDegrees((int)(fricRatio * 40), 'l', 0.7, hardware);
+            hardware.intakeWheelL.setPower(0.7);
+            hardware.intakeWheelR.setPower(0.7);
+            robot.moveForward((int)(fricRatio * 900), .6, hardware);
+            //By now we should have the skystone in our robot
+            hardware.intakeWheelL.setPower(0);
+            hardware.intakeWheelR.setPower(0);
+
+            robot.moveForward((int)(fricRatio * 480), -.6, hardware);
+            Thread.sleep(100);
+            robot.turnDegrees((int)(fricRatio * 85), 'l', 0.7, hardware);
+            //By now we should be on the second
+            Thread.sleep(100);
+            robot.moveForward((int)(fricRatio * 350), .6, hardware);
+
+            executor.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    robot.setMotorPower(0, hardware);
+                }
+            }, 5, TimeUnit.SECONDS);
+
+            robot.setMotorPower(0.225, hardware);
+            while (hardware.wheels.get(0).getPower() != 0) {
+                if (hardware.color.red() > 3 * hardware.color.blue()) {
+                    robot.setMotorPower(0, hardware);
+                }
+            }
+        }
     }
 }
+
