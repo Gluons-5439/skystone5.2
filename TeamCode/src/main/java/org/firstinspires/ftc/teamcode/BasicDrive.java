@@ -18,7 +18,7 @@ public class BasicDrive extends LinearOpMode {
 
         h.init(hardwareMap, false);
 
-        double maxPower = .75;
+        double maxPower = 1;
 
        //boolean rakeIsLowered = false;
         //int rakeButtonCD = 0;
@@ -33,6 +33,8 @@ public class BasicDrive extends LinearOpMode {
         int capCD = 0;
         boolean capIsDown = false;
         int flipArmButtonCD = 0;
+        int kickButtonCD = 0;
+        boolean kicked = false;
         boolean flipIsOut = false;
         h.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         h.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -50,8 +52,8 @@ public class BasicDrive extends LinearOpMode {
             //                                                                                                                      135 degrees  45 degrees
 
             double forward = Math.abs(gamepad1.left_stick_y) > 0.2 ? -gamepad1.left_stick_y : 0;
-            double clockwise = Math.abs(gamepad1.left_stick_x) > 0.2 ? -gamepad1.left_stick_x : 0;                                  // 45 degrees   135 degrees
-            double right = Math.abs(gamepad1.right_stick_x) > 0.2 ? gamepad1.right_stick_x : 0;
+            double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees
+            double right = Math.abs(gamepad1.left_stick_x) > 0.2 ? gamepad1.left_stick_x : 0;
             //Math for drive relative to theta
             clockwise *= -0.6;
 
@@ -68,11 +70,11 @@ public class BasicDrive extends LinearOpMode {
             // BUTTONS ==================================================
 
             // Gamepad 1 - Driver + Intake
-            if (slowModeButtonCD == 0 && gamepad1.right_bumper) {
-                if (maxPower == 0.75) {
-                    maxPower = 0.375;
+            if (slowModeButtonCD == 0 && gamepad1.back) {
+                if (maxPower == 1) {
+                    maxPower = .5;
                 } else {
-                    maxPower = 0.75;
+                    maxPower = 1;
                 }
                 slowModeButtonCD = 12;
             }
@@ -84,6 +86,8 @@ public class BasicDrive extends LinearOpMode {
                 h.intakeWheelL.setPower(0);
                 h.intakeWheelR.setPower(0);
             }
+
+
 
 
 
@@ -101,6 +105,17 @@ public class BasicDrive extends LinearOpMode {
                     fArmIsDown = false;
                 }
                 fArmButtonCD = 12;
+            }
+
+            if(kickButtonCD == 0 && gamepad2.x) {
+                if (!kicked) {
+                    h.kick.setPosition(1);
+                    kicked = true;
+                } else {
+                    h.kick.setPosition(0);
+                    kicked = false;
+                }
+                kickButtonCD = 12;
             }
 
             //Lift
@@ -295,6 +310,9 @@ public class BasicDrive extends LinearOpMode {
             }
             if (flipArmButtonCD > 0) {
                 flipArmButtonCD--;
+            }
+            if (kickButtonCD> 0) {
+                kickButtonCD--;
             }
 
 

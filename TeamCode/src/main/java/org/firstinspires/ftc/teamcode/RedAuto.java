@@ -36,11 +36,9 @@ public class RedAuto extends LinearOpMode {
             }
         }, 29, TimeUnit.SECONDS);
 
-//        robot.turnDegrees(90, 'l', 0.5, hardware);
-//        Thread.sleep(250);
         robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
         Thread.sleep(100);
-        robot.turnDegrees((int)(64 * fricRatio), 'r', 0.7, hardware);
+        robot.turnDegrees((int)(64 * fricRatio), 'l', 0.7, hardware);
         Thread.sleep(100);
 
         robot.tfod.activate();
@@ -62,7 +60,7 @@ public class RedAuto extends LinearOpMode {
                 telemetry.update();
             }
             robot.moveForward((int)(fricRatio * 500), -.6, hardware);
-            robot.turnDegrees((int)(fricRatio * 40), 'l', 0.7, hardware);
+            robot.turnDegrees((int)(fricRatio * 40), 'r', 0.7, hardware);
             hardware.intakeWheelL.setPower(0.7);
             hardware.intakeWheelR.setPower(0.7);
             robot.moveForward((int)(fricRatio * 900), .6, hardware);
@@ -72,7 +70,7 @@ public class RedAuto extends LinearOpMode {
 
             robot.moveForward((int)(fricRatio * 480), -.6, hardware);
             Thread.sleep(100);
-            robot.turnDegrees((int)(fricRatio * 85), 'l', 0.7, hardware);
+            robot.turnDegrees((int)(fricRatio * 85), 'r', 0.7, hardware);
             //By now we should be on the second
             Thread.sleep(100);
             robot.moveForward((int)(fricRatio * 350), .6, hardware);
@@ -90,7 +88,10 @@ public class RedAuto extends LinearOpMode {
                     robot.setMotorPower(0, hardware);
                 }
             }
+            robot.moveForward((int)(fricRatio * 500), .5, hardware);
+            robot.moveForward((int)(fricRatio * 500), -.5, hardware);
         }
     }
 }
+
 

@@ -64,45 +64,32 @@ public class SetupProgram extends LinearOpMode {
 
 
 
-            if(gamepad1.right_trigger > 0.2) {
+            if (gamepad1.right_trigger > 0.2) {
                 robot.liftMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
                 robot.liftMotorR.setPower(1);
 
-            }
-            else if(gamepad1.right_trigger < 0.2)
-            {
+            } else {
                 robot.liftMotorR.setPower(0);
-
             }
 
-            if(gamepad2.left_trigger > 0.2)
-            {
-                robot.liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
+            if(gamepad1.left_trigger > 0.2) {
+                robot.liftMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
                 robot.liftMotorL.setPower(1);
-            }
-            else if(gamepad2.left_trigger < 0.2)
-            {
+            } else {
                 robot.liftMotorL.setPower(0);
             }
 
             if(gamepad2.right_trigger > 0.2) {
                 robot.liftMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
                 robot.liftMotorR.setPower(1);
-
-            }
-            else if(gamepad2.right_trigger < 0.2)
-            {
+            } else {
                 robot.liftMotorR.setPower(0);
-
             }
 
-            if(gamepad2.left_trigger > 0.2)
-            {
+            if(gamepad2.left_trigger > 0.2) {
                 robot.liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
                 robot.liftMotorL.setPower(1);
-            }
-            else if(gamepad2.left_trigger < 0.2)
-            {
+            } else {
                 robot.liftMotorL.setPower(0);
             }
 
@@ -118,6 +105,7 @@ public class SetupProgram extends LinearOpMode {
             if (capCD > 0) {
                 capCD--;
             }
+
         }
 
         //Stops phone from queuing too many commands and breaking

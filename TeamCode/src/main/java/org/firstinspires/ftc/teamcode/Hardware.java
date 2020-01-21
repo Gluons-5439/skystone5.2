@@ -27,6 +27,7 @@ public class Hardware {
     Servo claw;             // Hub 3 Servo Slot 1
     CRServo horizontal;     // Hub 3 Servo Slot 2
     Servo cap;              // Hub 3 Servo Slot 4
+    Servo kick;
 
     DcMotor intakeWheelL;   // Hub 2 Slot 3
     DcMotor intakeWheelR;   // Hub 3 Slot 3
@@ -77,6 +78,7 @@ public class Hardware {
         horizontal = hwMap.crservo.get("horizontal");
         flip = hwMap.servo.get("flip");
         cap = hwMap.servo.get("cap");
+        kick = hwMap.servo.get("kick");
 
 
         color = hwMap.colorSensor.get("colorSensor");
@@ -127,6 +129,7 @@ public class Hardware {
         claw.setDirection(Servo.Direction.FORWARD);
         horizontal.setDirection(CRServo.Direction.FORWARD);
         flip.setDirection(Servo.Direction.FORWARD);
+        cap.setDirection(Servo.Direction.FORWARD);
         cap.setDirection(Servo.Direction.FORWARD);
 
 
