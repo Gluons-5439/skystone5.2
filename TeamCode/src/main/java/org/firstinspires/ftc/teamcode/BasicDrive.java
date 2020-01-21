@@ -70,7 +70,7 @@ public class BasicDrive extends LinearOpMode {
             // BUTTONS ==================================================
 
             // Gamepad 1 - Driver + Intake
-            if (slowModeButtonCD == 0 && gamepad1.back) {
+            if (slowModeButtonCD == 0 && gamepad1.back) { 
                 if (maxPower == 1) {
                     maxPower = .5;
                 } else {
