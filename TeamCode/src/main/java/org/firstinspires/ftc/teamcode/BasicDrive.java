@@ -55,7 +55,7 @@ public class BasicDrive extends LinearOpMode {
             double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees
             double right = Math.abs(gamepad1.left_stick_x) > 0.2 ? gamepad1.left_stick_x : 0;
             //Math for drive relative to theta
-            clockwise *= -0.6;
+            clockwise *= -1;
 
             double fr = forward - clockwise + right;  //+
             double br = forward - clockwise - right;  //-
@@ -70,7 +70,7 @@ public class BasicDrive extends LinearOpMode {
             // BUTTONS ==================================================
 
             // Gamepad 1 - Driver + Intake
-            if (slowModeButtonCD == 0 && gamepad1.back) { 
+            if (slowModeButtonCD == 0 && gamepad1.back) {
                 if (maxPower == 1) {
                     maxPower = .5;
                 } else {

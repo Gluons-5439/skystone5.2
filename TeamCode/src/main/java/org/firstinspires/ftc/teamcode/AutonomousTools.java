@@ -1,11 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.android.util.Size;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureRequest;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureSession;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCharacteristics;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraException;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -16,6 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.ArrayList;
 
@@ -30,6 +43,9 @@ public class AutonomousTools {
     static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     static final String LABEL_STONE = "Stone";
     static final String LABEL_SKYSTONE = "Skystone";
+
+
+
 
     Orientation lastAngles = new Orientation();
     double globalAngle, correction;
@@ -527,6 +543,77 @@ public class AutonomousTools {
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
+
+        parameters.camera = new Camera() {
+            @NonNull
+            @Override
+            public CameraName getCameraName() {
+                CameraName sad = new CameraName() {
+                    @Override
+                    public boolean isWebcam() {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean isCameraDirection() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isSwitchable() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isUnknown() {
+                        return false;
+                    }
+
+                    @Override
+                    public void asyncRequestCameraPermission(Context context, Deadline deadline, Continuation<? extends Consumer<Boolean>> continuation) {
+
+                    }
+
+                    @Override
+                    public boolean requestCameraPermission(Deadline deadline) {
+                        return false;
+                    }
+
+                    @Override
+                    public CameraCharacteristics getCameraCharacteristics() {
+                        return null;
+                    }
+                };
+                return sad;
+            }
+
+            @Override
+            public CameraCaptureRequest createCaptureRequest(int androidFormat, Size size, int fps) throws CameraException {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public CameraCaptureSession createCaptureSession(Continuation<? extends CameraCaptureSession.StateCallback> continuation) throws CameraException {
+                return null;
+            }
+
+            @Override
+            public void close() {
+
+            }
+
+            @Override
+            public Camera dup() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public <T extends CameraControl> T getControl(Class<T> controlType) {
+                return null;
+            }
+        };
         parameters.vuforiaLicenseKey = "AfmBbcz/////AAAAGbLGg++zzk4MiOrcPTc3t9xQj3QHfISJprebOgt5JJ4+83xtFO+ApGlI3GVY/aMgCpoGEIzaJse9sXiYDiLYpJQlGDX765tWJUrqM+pzqLxVXjWA1J6c968/YqYq74Vq5emNxGHj5SF3HP3m43Iq/YYgkSdMv4BR+RThPPnIIzrbAjEAHHtMgH7vVh036+bcw9UqBfSdD/IBqrKpJLERn5+Qi/4Q4EoReCC0CTDfZ+LcY0rUur0QZRkMpxx/9s4eCgIU+qfOcSlBvjoX7QAQ2MImUME1y5yJiyaWueamnhRBOwERGBuDKyGp4eBWp4i3esJcplrWYovjzPg9fL7Thy8v9KnrHy22PUFAYY+1vjKp";
         parameters.cameraDirection = CameraDirection.BACK;
         this.vuforia = ClassFactory.getInstance().createVuforia(parameters);
