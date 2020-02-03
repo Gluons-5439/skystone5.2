@@ -8,12 +8,18 @@ import java.util.ArrayList;
 /**
  * Drive Train Class
  */
-public class DriveTrain{
-    DcMotor frontRight;     // Hub 3 Slot 0
-    DcMotor frontLeft;      // Hub 2 Slot 0
-    DcMotor backRight;      // Hub 3 Slot 1
-    DcMotor backLeft;       // Hub 2 Slot 1
+
+enum MoveStyle {
+    FORWARD, BACKWARD, LEFT, RIGHT, TURN_LEFT, TURN_RIGHT
+}
+
+public class DriveTrain {
+    DcMotor frontRight;     // Hub 3 Slot 0 GAMER MOMENTS 2020
+    DcMotor frontLeft;     // Hub 2 Slot 0 GAMER MOMENTS 2020
+    DcMotor backRight;     // Hub 3 Slot 1 GAMER MOMENTS 2020
+    DcMotor backLeft;     // Hub 2 Slot 1 GAMER MOMENTS 2020
     ArrayList<DcMotor> wheels;
+
     public DriveTrain(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br){
         fr.setDirection(DcMotor.Direction.REVERSE);
         br.setDirection(DcMotor.Direction.REVERSE);
@@ -33,12 +39,24 @@ public class DriveTrain{
         backLeft = bl;
         backRight = br;
 
-         wheels.add(frontLeft);
+        wheels.add(frontLeft);
         wheels.add(frontRight);
         wheels.add(backLeft);
         wheels.add(backRight);
     }
 
+    private int[] getDirs(MoveStyle moveStyle) {
+        int[] dirs = {1, 1, 1, 1};
+        if (moveStyle == MoveStyle.BACKWARD) {
+            dirs[0] = -1; dirs[1] = -1; dirs[2] = -1; dirs[3] = -1;
+        } else if (moveStyle == MoveStyle.LEFT) {
+            dirs[1] = -1; dirs[2] = -1;
+        } else if (moveStyle == MoveSty)
+    }
+
+    public void moveForward(int inches, double power) {
+        move(inches, power, )
+    }
 
     public void setMotorPower(double flpower, double frpower, double blpower, double brpower){
         frontLeft.setPower(flpower);
@@ -47,7 +65,7 @@ public class DriveTrain{
         backRight.setPower(brpower);
     }
 
-    public void moveStraightInches(int inches, double power) {
+    public void move(int inches, double power, int[] dir) {
         for(DcMotor motor : wheels)
         {
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -66,11 +84,12 @@ public class DriveTrain{
 
 
     public int getTicks(int inches) {
-        double WHEEL_RADIUS = 2;  // Radius in inches
+        double WHEEL_RADIUS = 2;  // Radius in inches GAMER MOMENTS 2020
         double IN_PER_REV = 2 * Math.PI * WHEEL_RADIUS;
         int GEAR_RATIO = 2;
         double TICKS_PER_REV = 145.6 * GEAR_RATIO;
-        double TICKS_PER_IN = 1 / (IN_PER_REV / TICKS_PER_REV);
+        double TICKS_PER_IN = TICKS_PER_REV / IN_PER_REV;
+
         return (int)(TICKS_PER_IN * inches);
 
     }

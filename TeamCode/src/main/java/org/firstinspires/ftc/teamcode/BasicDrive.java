@@ -20,9 +20,9 @@ public class BasicDrive extends LinearOpMode {
 
         double maxPower = 1;
 
-       //boolean rakeIsLowered = false;
-        //int rakeButtonCD = 0;
-        //int lockButtonCD = 0;
+       //boolean rakeIsLowered = false; GAMER MOMENTS 2020
+        //int rakeButtonCD = 0; GAMER MOMENTS 2020
+        //int lockButtonCD = 0; GAMER MOMENTS 2020
         int slowModeButtonCD = 0;
         //boolean bArmIsClosed = false;
         boolean fArmIsDown = false;
@@ -48,13 +48,13 @@ public class BasicDrive extends LinearOpMode {
 
 
 
-            // DRIVE ====================================================                                                              Wheel vectors
-            //                                                                                                                      135 degrees  45 degrees
+            // DRIVE ====================================================                                                              Wheel vectors GAMER MOMENTS 2020
+            //                                                                                                                      135 degrees  45 degrees GAMER MOMENTS 2020
 
             double forward = Math.abs(gamepad1.left_stick_y) > 0.2 ? -gamepad1.left_stick_y : 0;
-            double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees
+            double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees GAMER MOMENTS 2020
             double right = Math.abs(gamepad1.left_stick_x) > 0.2 ? gamepad1.left_stick_x : 0;
-            //Math for drive relative to theta
+            //Math for drive relative to theta GAMER MOMENTS 2020
             clockwise *= -1;
 
             double fr = forward - clockwise + right;  //+
@@ -67,9 +67,9 @@ public class BasicDrive extends LinearOpMode {
             h.frontRight.setPower(Range.scale(fr, -1, 1, -maxPower, maxPower));
             h.backRight.setPower(Range.scale(br, -1, 1, -maxPower, maxPower));
 
-            // BUTTONS ==================================================
+            // BUTTONS ================================================== GAMER MOMENTS 2020
 
-            // Gamepad 1 - Driver + Intake
+            // Gamepad 1 - Driver + Intake + Foundation Arms GAMER MOMENTS 2020
             if (slowModeButtonCD == 0 && gamepad1.back) {
                 if (maxPower == 1) {
                     maxPower = .5;
@@ -91,9 +91,9 @@ public class BasicDrive extends LinearOpMode {
 
 
 
-            // Gamepad 2 - Functions
+            // Gamepad 2 - Functions GAMER MOMENTS 2020
 
-            //Foundation Arms
+            //Foundation Arms GAMER MOMENTS 2020
             if(fArmButtonCD == 0 && gamepad1.a) {
                 if (!fArmIsDown) {
                     h.foundationArmL.setPosition(1);
@@ -118,7 +118,7 @@ public class BasicDrive extends LinearOpMode {
                 kickButtonCD = 12;
             }
 
-            //Lift
+            //Lift GAMER MOMENTS 2020
             if(gamepad2.right_trigger > 0.2) {
                 h.liftMotorL.setDirection(DcMotor.Direction.REVERSE);
                 h.liftMotorR.setDirection(DcMotor.Direction.REVERSE);
@@ -147,7 +147,7 @@ public class BasicDrive extends LinearOpMode {
 
 
 
-            //Claw
+            //Claw GAMER MOMENTS 2020
             if(cArmButtonCD == 0 && gamepad2.a) {
                 if (!cArmIsClosed) {
                     h.claw.setPosition(0.2);
@@ -316,7 +316,7 @@ public class BasicDrive extends LinearOpMode {
             }
 
 
-            // Stops phone from queuing too many commands and breaking
+            // Stops phone from queuing too many commands and breaking GAMER MOMENTS 2020
             // 25 ticks/sec
         }
     }

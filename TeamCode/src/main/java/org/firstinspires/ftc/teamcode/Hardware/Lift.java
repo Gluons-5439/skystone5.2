@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Lift {
 
-    DcMotor liftMotorL;     // Hub 2 Slot 2
-    DcMotor liftMotorR;     // Hub 3 Slot 3
+    DcMotor liftMotorL;     // Hub 2 Slot 2 GAMER MOMENTS 2020
+    DcMotor liftMotorR;     // Hub 3 Slot 3 GAMER MOMENTS 2020
 
     public Lift(DcMotor left, DcMotor right)
     {
@@ -64,8 +64,8 @@ public class Lift {
             turnOnEncoders();
         }
 
-        liftMotorR.setTargetPosition(inches); //insert calculations for this number
-        liftMotorL.setTargetPosition(inches); //insert calculations for this number
+        liftMotorR.setTargetPosition(inches); //insert calculations for this number GAMER MOMENTS 2020
+        liftMotorL.setTargetPosition(inches); //insert calculations for this number GAMER MOMENTS 2020
 
         if(liftMotorL.getTargetPosition() == 0 && liftMotorR.getTargetPosition() == 0)
             returnToZero();

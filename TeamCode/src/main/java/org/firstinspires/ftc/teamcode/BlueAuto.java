@@ -38,8 +38,8 @@ public class BlueAuto extends LinearOpMode {
             }
         }, 29, TimeUnit.SECONDS);
 
-//        robot.turnDegrees(90, 'l', 0.5, hardware);
-//        Thread.sleep(250);
+//        robot.turnDegrees(90, 'l', 0.5, hardware); GAMER MOMENTS 2020
+//        Thread.sleep(250); GAMER MOMENTS 2020
         robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
         Thread.sleep(100);
         robot.turnDegrees((int)(64 * fricRatio), 'r', 0.7, hardware);
@@ -68,14 +68,14 @@ public class BlueAuto extends LinearOpMode {
             hardware.intakeWheelL.setPower(0.7);
             hardware.intakeWheelR.setPower(0.7);
             robot.moveForward((int)(fricRatio * 900), .6, hardware);
-            //By now we should have the skystone in our robot
+            //By now we should have the skystone in our robot GAMER MOMENTS 2020
             hardware.intakeWheelL.setPower(0);
             hardware.intakeWheelR.setPower(0);
 
             robot.moveForward((int)(fricRatio * 480), -.6, hardware);
             Thread.sleep(100);
             robot.turnDegrees((int)(fricRatio * 85), 'l', 0.7, hardware);
-            //By now we should be on the second
+            //By now we should be on the second GAMER MOMENTS 2020
             Thread.sleep(100);
             robot.moveForward((int)(fricRatio * 350), .6, hardware);
 

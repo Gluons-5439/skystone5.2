@@ -29,8 +29,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
-
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.Hardware.*;
 
 public class AutonomousTools {
     private final double WHEEL_RADIUS = 2;  // Radius in inches
@@ -76,29 +75,29 @@ public class AutonomousTools {
 //        moveDistInTicks(moveStyle, ticks, h);
 //    }
 
-    /**
-     * Move forward a specified distance.
-     *
-     * @param inches The distance to move.
-     * @param h The Hardware class with the motors.
-     */
-    void moveStraightForward(int inches, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = getTicks(inches);
+//    /**
+//     * Move forward a specified distance.
+//     *
+//     * @param inches The distance to move.
+//     * @param h The Hardware class with the motors.
+//     */
+//    void moveStraightForward(int inches, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = getTicks(inches);
+//
+//        moveDistInTicks('f',ticks, h, telemetry);
+//    }
 
-        moveDistInTicks('f',ticks, h, telemetry);
-    }
-
-    /**
-     * Move backwards a specified distance.
-     *
-     * @param inches The distance to move.
-     * @param h The Hardware class with the motors.
-     */
-    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
-        int ticks = getTicks(inches);
-
-        moveDistInTicks('b', ticks, h, telemetry);
-    }
+//    /**
+//     * Move backwards a specified distance.
+//     *
+//     * @param inches The distance to move.
+//     * @param h The Hardware class with the motors.
+//     */
+//    void moveStraightBack(int inches, @NonNull Hardware h, Telemetry telemetry) {
+//        int ticks = getTicks(inches);
+//
+//        moveDistInTicks('b', ticks, h, telemetry);
+//    }
 
     /**
      * Strafe right a specified distance.
@@ -198,12 +197,12 @@ public class AutonomousTools {
      *
      * @param h The Hardware class with the motors.
      */
-    void resetMotors(@NonNull Hardware h) {
-        for (int i = 0; i < h.wheels.size(); i ++ ) {
-            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            h.wheels.get(i).setPower(0);
-        }
-    }
+//    void resetMotors(@NonNull Hardware h) {
+//        for (int i = 0; i < h.wheels.size(); i ++ ) {
+//            h.wheels.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            h.wheels.get(i).setPower(0);
+//        }
+//    }
 
     public int getTicks(int inches) {
         return (int)(TICKS_PER_IN * inches);

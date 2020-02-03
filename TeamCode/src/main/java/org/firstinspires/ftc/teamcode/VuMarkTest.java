@@ -63,7 +63,7 @@ public class VuMarkTest extends LinearOpMode {
 
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary GAMER MOMENTS 2020
 
 
         waitForStart();

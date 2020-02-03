@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 
-public class Hardware {
+public class Hardware_ {
 
     ArrayList<DcMotor> wheels = new ArrayList<>();
 
@@ -44,8 +44,8 @@ public class Hardware {
     private ElapsedTime period = new ElapsedTime();
 
 
-    public Hardware(){
-        // Empty because we have nothing to initialise when creating a new object.
+    public Hardware_(){
+        // Empty because we have nothing to initialise when creating a new object. GAMER MOMENTS 2020
     }
 
 
@@ -58,7 +58,7 @@ public class Hardware {
 
 
     private void initDevices() {
-        // Initialise all parts connected to the expansion hubs
+        // Initialise all parts connected to the expansion hubs GAMER MOMENTS 2020
         imu = hwMap.get(BNO055IMU.class, "gyro");
         BNO055IMU.Parameters param = new BNO055IMU.Parameters();
         param.calibrationDataFile = "BNO055IMUCalibration.json";
@@ -92,7 +92,7 @@ public class Hardware {
     }
 
     private void initMotorSettings(boolean initAuto) {
-        // Set motor Mode and Direction
+        // Set motor Mode and Direction GAMER MOMENTS 2020
 
 
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -137,7 +137,7 @@ public class Hardware {
     }
 
     private void initDefaultPosition() throws InterruptedException {
-        // Set default positions for motors.
+        // Set default positions for motors. GAMER MOMENTS 2020
         frontRight.setPower(0);
         frontLeft.setPower(0);
         backRight.setPower(0);
