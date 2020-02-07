@@ -59,13 +59,7 @@ public class Hardware_ {
 
     private void initDevices() {
         // Initialise all parts connected to the expansion hubs GAMER MOMENTS 2020
-        imu = hwMap.get(BNO055IMU.class, "gyro");
-        BNO055IMU.Parameters param = new BNO055IMU.Parameters();
-        param.calibrationDataFile = "BNO055IMUCalibration.json";
-        param.loggingEnabled = true;
-        param.loggingTag = "IMU";
-        param.mode = BNO055IMU.SensorMode.IMU;
-        imu.initialize(param);
+
 
         frontRight = hwMap.dcMotor.get("frontRight");
         frontLeft = hwMap.dcMotor.get("frontLeft");

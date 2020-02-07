@@ -51,11 +51,18 @@ public class DriveTrain {
             dirs[0] = -1; dirs[1] = -1; dirs[2] = -1; dirs[3] = -1;
         } else if (moveStyle == MoveStyle.LEFT) {
             dirs[1] = -1; dirs[2] = -1;
-        } else if (moveStyle == MoveStyle.FORWARD)
+        } else if (moveStyle == MoveStyle.RIGHT) {
+            dirs[0] = -1; dirs[3] = -1;
+        } else if (moveStyle == MoveStyle.TURN_LEFT) {
+            dirs[0] = -1; dirs[2] = -1;
+        } else if (moveStyle == MoveStyle.TURN_RIGHT) {
+            dirs[1] = -1; dirs[3] = -1;
+        }
+        return dirs;
     }
 
     public void moveForward(int inches, double power) {
-        move(inches, power, )
+        move(inches, power, getDirs(MoveStyle.FORWARD));
     }
 
     public void setMotorPower(double flpower, double frpower, double blpower, double brpower){
@@ -66,18 +73,18 @@ public class DriveTrain {
     }
 
     public void move(int inches, double power, int[] dir) {
-        for(DcMotor motor : wheels)
-        {
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motor.setTargetPosition(getTicks(inches));
-            motor.setPower(power);
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        for (int i = 0; i < 3; i++) {
+            wheels.get(i).setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            wheels.get(i).setTargetPosition(getTicks(inches) * dir[i]);
+            wheels.get(i).setPower(power * dir[i]);
+            wheels.get(i).setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        while(frontRight.isBusy() && frontLeft.isBusy() && backRight.isBusy() && backLeft.isBusy()){}
+        while (frontRight.isBusy() && frontLeft.isBusy() && backRight.isBusy() && backLeft.isBusy());
 
         for(DcMotor motor : wheels)
         {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }

@@ -17,30 +17,30 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name = "EasyAuto", group = "Autonomous")
 public class EasyAuto extends LinearOpMode {
 
-    private Hardware hardware = new Hardware();
-    private AutonomousTools robot = new AutonomousTools();
-
-    private final double fricRatio = 1;
+//    private Hardware hardware = new Hardware();
+//    private AutonomousTools robot = new AutonomousTools();
+//
+//    private final double fricRatio = 1;
 
     public void runOpMode() throws InterruptedException {
 
-        //robot.initSensors(hardwareMap);
-        hardware.init(hardwareMap, false);
-
-
-        waitForStart();
-
-        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-        executor.schedule(new Runnable() {
-            @Override
-            public void run() {
-                robot.tfod.deactivate();
-            }
-        }, 29, TimeUnit.SECONDS);
-
-        robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
-        Thread.sleep(100);
-
+//        //robot.initSensors(hardwareMap);
+//        hardware.init(hardwareMap, false);
+//
+//
+//        waitForStart();
+//
+//        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+//        executor.schedule(new Runnable() {
+//            @Override
+//            public void run() {
+//                robot.tfod.deactivate();
+//            }
+//        }, 29, TimeUnit.SECONDS);
+//
+//        robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
+//        Thread.sleep(100);
+//
 
     }
 }
