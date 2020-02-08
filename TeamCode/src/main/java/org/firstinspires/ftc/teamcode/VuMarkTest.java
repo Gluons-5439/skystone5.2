@@ -42,58 +42,58 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="Concept: VuMark Id", group ="Concept")
 
 public class VuMarkTest extends LinearOpMode {
-    Hardware robot = new Hardware();
-
-    OpenGLMatrix lastLocation = null;
-
-    VuforiaLocalizer vuforia;
+//    Hardware robot = new Hardware();
+//
+//    OpenGLMatrix lastLocation = null;
+//
+//    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot.init(hardwareMap, true);
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        
-        parameters.vuforiaLicenseKey = "AfmBbcz/////AAAAGbLGg++zzk4MiOrcPTc3t9xQj3QHfISJprebOgt5JJ4+83xtFO+ApGlI3GVY/aMgCpoGEIzaJse9sXiYDiLYpJQlGDX765tWJUrqM+pzqLxVXjWA1J6c968/YqYq74Vq5emNxGHj5SF3HP3m43Iq/YYgkSdMv4BR+RThPPnIIzrbAjEAHHtMgH7vVh036+bcw9UqBfSdD/IBqrKpJLERn5+Qi/4Q4EoReCC0CTDfZ+LcY0rUur0QZRkMpxx/9s4eCgIU+qfOcSlBvjoX7QAQ2MImUME1y5yJiyaWueamnhRBOwERGBuDKyGp4eBWp4i3esJcplrWYovjzPg9fL7Thy8v9KnrHy22PUFAYY+1vjKp";
-        
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary GAMER MOMENTS 2020
-
-
-        waitForStart();
-
-        relicTrackables.activate();
-        //robot.jewelSensor.enableLed(true);
-        while (opModeIsActive()) {
-
-
-           /* RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s visible", vuMark);
-            } else {
-                telemetry.addData("VuMark", "not visible");
-            }
-
-            telemetry.addData(getColor()+"",robot.jewelSensor.argb());
-            telemetry.update();
-
-        }
+//        robot.init(hardwareMap, true);
+//
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//
+//        parameters.vuforiaLicenseKey = "AfmBbcz/////AAAAGbLGg++zzk4MiOrcPTc3t9xQj3QHfISJprebOgt5JJ4+83xtFO+ApGlI3GVY/aMgCpoGEIzaJse9sXiYDiLYpJQlGDX765tWJUrqM+pzqLxVXjWA1J6c968/YqYq74Vq5emNxGHj5SF3HP3m43Iq/YYgkSdMv4BR+RThPPnIIzrbAjEAHHtMgH7vVh036+bcw9UqBfSdD/IBqrKpJLERn5+Qi/4Q4EoReCC0CTDfZ+LcY0rUur0QZRkMpxx/9s4eCgIU+qfOcSlBvjoX7QAQ2MImUME1y5yJiyaWueamnhRBOwERGBuDKyGp4eBWp4i3esJcplrWYovjzPg9fL7Thy8v9KnrHy22PUFAYY+1vjKp";
+//
+//        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+//        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+//
+//
+//        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+//        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+//        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary GAMER MOMENTS 2020
+//
+//
+//        waitForStart();
+//
+//        relicTrackables.activate();
+//        //robot.jewelSensor.enableLed(true);
+//        while (opModeIsActive()) {
+//
+//
+//           /* RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+//            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+//                telemetry.addData("VuMark", "%s visible", vuMark);
+//            } else {
+//                telemetry.addData("VuMark", "not visible");
+//            }
+//
+//            telemetry.addData(getColor()+"",robot.jewelSensor.argb());
+//            telemetry.update();
+//
+//        }
+//    }
+//
+//   public int getColor(){
+//       if(robot.jewelSensor.red() > 150){
+//          return 1; //1 = red
+//        } else if(robot.jewelSensor.blue() > 150) {
+//            return 0; // 0 = blue
+//        } else {
+//            return -1; // -1 is abort
+//        }
+//    }*/
     }
-
-   public int getColor(){
-       if(robot.jewelSensor.red() > 150){
-          return 1; //1 = red
-        } else if(robot.jewelSensor.blue() > 150) {
-            return 0; // 0 = blue
-        } else {
-            return -1; // -1 is abort
-        }
-    }*/
-        }}
 }

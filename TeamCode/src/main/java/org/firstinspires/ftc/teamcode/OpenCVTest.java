@@ -1,4 +1,4 @@
-package org.openftc.easyopencv.examples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp
-public class WebcamExample extends LinearOpMode
+public class OpenCVTest extends LinearOpMode
 {
     OpenCvCamera webcam;
 
@@ -34,18 +34,13 @@ public class WebcamExample extends LinearOpMode
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
-        // OR...  Do Not Activate the Camera Monitor View
-        //webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
-
         /*
          * Open the connection to the camera device
          */
         webcam.openCameraDevice();
 
         /*
-         * Specify the image processing pipeline we wish to invoke upon receipt
-         * of a frame from the camera. Note that switching pipelines on-the-fly
-         * (while a streaming session is in flight) *IS* supported.
+         * Create a new data input branch thingamajig I don't know
          */
         webcam.setPipeline(new SamplePipeline());
 
@@ -67,9 +62,6 @@ public class WebcamExample extends LinearOpMode
          */
         webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
-        /*
-         * Wait for the user to press start on the Driver Station
-         */
         waitForStart();
 
         while (opModeIsActive())
@@ -77,12 +69,12 @@ public class WebcamExample extends LinearOpMode
             /*
              * Send some stats to the telemetry
              */
-            telemetry.addData("Frame Count", webcam.getFrameCount());
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+//            telemetry.addData("Frame Count", webcam.getFrameCount());
+//            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+//            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+//            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+//            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+//            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
             telemetry.update();
 
             /*
