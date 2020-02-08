@@ -95,10 +95,10 @@ public class Hardware_ {
         // Set motor Mode and Direction GAMER MOMENTS 2020
 
 
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             intakeWheelL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             intakeWheelR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

@@ -18,13 +18,14 @@ public class RedAuto extends LinearOpMode {
     private Hardware hardware = new Hardware();
     private AutonomousTools robot = new AutonomousTools();
 
-    private final double fricRatio = 1;
+    private final double fricRatio = 0.85;
+
+    boolean canGetSkystone= true;
 
     public void runOpMode() throws InterruptedException {
 
         robot.initSensors(hardwareMap);
         hardware.init(hardwareMap, false);
-
 
         waitForStart();
 
@@ -36,16 +37,29 @@ public class RedAuto extends LinearOpMode {
             }
         }, 29, TimeUnit.SECONDS);
 
+//        robot.turnDegrees(90, 'l', 0.5, hardware);
+//        Thread.sleep(250);
         robot.moveForward((int)(275 * fricRatio), 0.6, hardware);
         Thread.sleep(100);
         robot.turnDegrees((int)(64 * fricRatio), 'l', 0.7, hardware);
         Thread.sleep(100);
+        robot.moveForward((int)(800 * fricRatio), 0.6, hardware);
+        Thread.sleep(100);
+        robot.turnDegrees((int)(145 * fricRatio), 'r', 0.7, hardware);
+        Thread.sleep(100);
+
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                canGetSkystone = false;
+            }
+        }, 5, TimeUnit.SECONDS);
 
         robot.tfod.activate();
-        robot.setMotorPower(0.225, 1, 1, 1, 1, hardware); // Make sure you account for friction and change
+        robot.setMotorPower(0.225 * fricRatio, 1, 1, 1, 1, hardware); // Make sure you account for friction and change
         if (robot.tfod != null) {
             boolean skyStoneFound = false;                                            // motor power if necessary
-            while (!skyStoneFound) {
+            while (!skyStoneFound && canGetSkystone) {
                 List<Recognition> updatedRecognitions = robot.tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetry.addData("Found ", updatedRecognitions.size());
@@ -59,21 +73,25 @@ public class RedAuto extends LinearOpMode {
                 }
                 telemetry.update();
             }
-            robot.moveForward((int)(fricRatio * 500), -.6, hardware);
-            robot.turnDegrees((int)(fricRatio * 40), 'r', 0.7, hardware);
-            hardware.intakeWheelL.setPower(0.7);
-            hardware.intakeWheelR.setPower(0.7);
-            robot.moveForward((int)(fricRatio * 900), .6, hardware);
-            //By now we should have the skystone in our robot
-            hardware.intakeWheelL.setPower(0);
-            hardware.intakeWheelR.setPower(0);
+            if (canGetSkystone) {
+                robot.moveForward((int) (fricRatio * 500), -.6, hardware);
+                robot.turnDegrees((int) (fricRatio * 40), 'l', 0.7, hardware);
+                hardware.intakeWheelL.setPower(0.7);
+                hardware.intakeWheelR.setPower(0.7);
+                robot.moveForward((int) (fricRatio * 900), .6, hardware);
+                //By now we should have the skystone in our robot
+                hardware.intakeWheelL.setPower(0);
+                hardware.intakeWheelR.setPower(0);
 
-            robot.moveForward((int)(fricRatio * 480), -.6, hardware);
-            Thread.sleep(100);
-            robot.turnDegrees((int)(fricRatio * 85), 'r', 0.7, hardware);
-            //By now we should be on the second
-            Thread.sleep(100);
-            robot.moveForward((int)(fricRatio * 350), .6, hardware);
+                robot.moveForward((int) (fricRatio * 480), -.6, hardware);
+                Thread.sleep(100);
+                robot.turnDegrees((int) (fricRatio * 85), 'l', 0.7, hardware);
+                //By now we should be on the second
+                Thread.sleep(100);
+                robot.moveForward((int) (fricRatio * 350), .6, hardware);
+            }
+
+            robot.turnDegrees(180, 'l', 0.7, hardware);
 
             executor.schedule(new Runnable() {
                 @Override
@@ -88,10 +106,7 @@ public class RedAuto extends LinearOpMode {
                     robot.setMotorPower(0, hardware);
                 }
             }
-            robot.moveForward((int)(fricRatio * 500), .5, hardware);
-            robot.moveForward((int)(fricRatio * 500), -.5, hardware);
         }
     }
 }
-
 
