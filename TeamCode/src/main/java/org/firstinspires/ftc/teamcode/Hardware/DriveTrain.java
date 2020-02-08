@@ -51,7 +51,7 @@ public class DriveTrain {
             dirs[0] = -1; dirs[1] = -1; dirs[2] = -1; dirs[3] = -1;
         } else if (moveStyle == MoveStyle.LEFT) {
             dirs[1] = -1; dirs[2] = -1;
-        } else if (moveStyle == MoveSty)
+        } else if (moveStyle == MoveStyle.FORWARD)
     }
 
     public void moveForward(int inches, double power) {
