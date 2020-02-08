@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.Hardware;
-
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 
 public class IMU {
 
     public BNO055IMU gyro;
+    Orientation angles;
+
     /**
      * IMU Class
      */
@@ -18,6 +23,11 @@ public class IMU {
         imu.initialize(param);
 
         gyro = imu;
+    }
+
+    public void initialize()
+    {
+
     }
 
 }
