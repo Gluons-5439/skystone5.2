@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import java.util.ArrayList;
 
 public class Intake{
-    DcMotor intakeWheelL;   // Hub 2 Slot 3 GAMER MOMENTS 2020
-    DcMotor intakeWheelR;   // Hub 3 Slot 3 GAMER MOMENTS 2020
+    public DcMotor intakeWheelL;   // Hub 2 Slot 3 GAMER MOMENTS 2020
+    public DcMotor intakeWheelR;   // Hub 3 Slot 3 GAMER MOMENTS 2020
     /**
      * Intake Class
      */

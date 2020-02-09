@@ -27,7 +27,12 @@ public class IMU {
 
     public void initialize()
     {
-
+        BNO055IMU.Parameters IMUParameters = new BNO055IMU.Parameters();
+        IMUParameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        IMUParameters.mode = BNO055IMU.SensorMode.IMU;
+        IMUParameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        IMUParameters.calibrationDataFile = "IMUCalibration.json";
+        gyro.initialize(IMUParameters);
     }
 
 }

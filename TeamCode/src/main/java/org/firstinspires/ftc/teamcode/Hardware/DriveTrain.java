@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Hardware;
 
 import java.util.ArrayList;
 
@@ -10,16 +12,19 @@ import java.util.ArrayList;
  * Drive Train Class
  */
 
+
+
 enum MoveStyle {
     FORWARD, BACKWARD, LEFT, RIGHT, TURN_LEFT, TURN_RIGHT
 }
 
 public class DriveTrain {
-    DcMotor frontRight;     // Hub 3 Slot 0 GAMER MOMENTS 2020
-    DcMotor frontLeft;     // Hub 2 Slot 0 GAMER MOMENTS 2020
-    DcMotor backRight;     // Hub 3 Slot 1 GAMER MOMENTS 2020
-    DcMotor backLeft;     // Hub 2 Slot 1 GAMER MOMENTS 2020
-    ArrayList<DcMotor> wheels;
+
+    public DcMotor frontRight;     // Hub 3 Slot 0 GAMER MOMENTS 2020
+    public DcMotor frontLeft;     // Hub 2 Slot 0 GAMER MOMENTS 2020
+    public DcMotor backRight;     // Hub 3 Slot 1 GAMER MOMENTS 2020
+    public DcMotor backLeft;     // Hub 2 Slot 1 GAMER MOMENTS 2020
+    public ArrayList<DcMotor> wheels;
 
     public DriveTrain(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br){
         fr.setDirection(DcMotor.Direction.REVERSE);
@@ -46,6 +51,28 @@ public class DriveTrain {
         wheels.add(backRight);
     }
 
+    //Accessors
+
+    public DcMotor getFrontRight()
+    {
+        return frontRight;
+    }
+
+    public DcMotor getFrontLeft()
+    {
+        return frontLeft;
+    }
+
+    public DcMotor getBackRight()
+    {
+        return backRight;
+    }
+
+    public DcMotor getBackLeft()
+    {
+        return backLeft;
+    }
+
     private int[] getDirs(MoveStyle moveStyle) {
         int[] dirs = {1, 1, 1, 1};
         if (moveStyle == MoveStyle.BACKWARD) {
@@ -62,8 +89,13 @@ public class DriveTrain {
         return dirs;
     }
 
-    public void moveForward(int inches, double power) {
-        move(inches, power, getDirs(MoveStyle.FORWARD));
+    //Modifiers
+
+    public void mapWheels(ArrayList<DcMotor> otherWheels, HardwareMap h)
+    {
+
+
+        otherWheels = wheels;
     }
 
     public void setMotorPower(double flpower, double frpower, double blpower, double brpower){
@@ -71,6 +103,10 @@ public class DriveTrain {
         frontRight.setPower(frpower);
         backLeft.setPower(blpower);
         backRight.setPower(brpower);
+    }
+
+    public void moveForward(int inches, double power) {
+        move(inches, power, getDirs(MoveStyle.FORWARD));
     }
 
     public void move(int inches, double power, int[] dir) {
