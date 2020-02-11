@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,29 @@ public class Intake{
 
         intakeWheelL = left;
         intakeWheelR = right;
+    }
+
+    public void endocytosis()
+    {
+        intakeWheelL.setDirection(DcMotor.Direction.FORWARD);
+        intakeWheelR.setDirection(DcMotor.Direction.REVERSE);
+
+        intakeWheelL.setPower(0.5);
+        intakeWheelR.setPower(0.5);
+    }
+
+    public void exocytosis()
+    {
+        intakeWheelL.setDirection(DcMotor.Direction.REVERSE);
+        intakeWheelR.setDirection(DcMotor.Direction.FORWARD);
+
+        intakeWheelL.setPower(-0.5);
+        intakeWheelR.setPower(-0.5);
+    }
+
+    public void stop()
+    {
+
     }
 
 

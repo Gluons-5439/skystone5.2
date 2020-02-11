@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class Lift {
 
@@ -40,17 +41,28 @@ public class Lift {
         return (liftMotorL.getMode() == DcMotor.RunMode.RUN_USING_ENCODER && liftMotorR.getMode() == DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void rise(){
+    public void rise()
+    {
+        liftMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotorR.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotorL.setPower(1);
         liftMotorR.setPower(1);
         liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-    public void lower(){
-        liftMotorL.setPower(-1);
-        liftMotorR.setPower(-1);
+    public void lower()
+    {
+        liftMotorL.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotorL.setPower(1);
+        liftMotorR.setPower(1);
         liftMotorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void stop()
+    {
+        liftMotorR.setPower(0);
+        liftMotorL.setPower(0);
     }
 
     /**
