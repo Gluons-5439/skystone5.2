@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Lift {
 
-    DcMotor liftMotorL;     // Hub 2 Slot 2 GAMER MOMENTS 2020
-    DcMotor liftMotorR;     // Hub 3 Slot 3 GAMER MOMENTS 2020
+    public DcMotor liftMotorL;     // Hub 2 Slot 2 GAMER MOMENTS 2020
+    public DcMotor liftMotorR;     // Hub 3 Slot 3 GAMER MOMENTS 2020
 
     public Lift(DcMotor left, DcMotor right)
     {
