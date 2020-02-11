@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Hardware.RobotMotorsAuto;
 
 public class DriveTrain extends RobotMotorsAuto {
 
+
     public DriveTrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight) {
         super(frontLeft, frontRight, backLeft, backRight);
     }
@@ -25,6 +26,7 @@ public class DriveTrain extends RobotMotorsAuto {
 
         setMotorPower();
     }
+
 
     public void moveForward(int inches, double power) {
         direction = MoveStyle.FORWARD;

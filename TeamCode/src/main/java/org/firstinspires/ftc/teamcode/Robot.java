@@ -24,6 +24,7 @@ public class Robot {
     public Servoes s;
     public Sensors c;
     public IMU imu;
+    public RobotMotors robotMotors;
     private VuforiaLocalizer vuforia;
     private static final String VUFORIA_KEY = "AWaEPBn/////AAAAGWa1VK57tkUipP01PNk9ghbackLeftuxjK1Oh1pmbHuRnpaJI0vi57dpbnIkpee7J1pQ2RIivfEFrobqblxS3dKUjRo52NMJab6Me2Yhz7ejs5SDn4G5dheW5enRNWmRBsL1n+9ica/nVjG8xvGc1bOBRsIeZyL3EZ2tKSJ407BRgMwNOmaLPBle1jxqAE+eLSoYsz/FuC1GD8c4S3luDm9Utsy/dM1W4dw0hDJFc+lve9tBKGBX0ggj6lpo9GUrTC8t19YJg58jsIXO/DiF09a5jbackLeftTeB2LK+GndUDEGyZA1mS3yAR6aIBeDYnFw+79mVFIkTPk8wv3HIQfzoggCu0AwWJBVUVjkDxJOWfzCGjaHylZlo";
     BNO055IMU gyro;
@@ -86,6 +87,7 @@ public class Robot {
         intake = new Intake(intakeWheelL, intakeWheelR);
         foundationArms = new FoundationArms(foundationArmL, foundationArmR);
         lift = new Lift(liftMotorL, liftMotorR);
+        robotMotors = new RobotMotors(frontLeft,frontRight,backLeft,backRight);
 
     }
 }

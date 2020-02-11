@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.Hardware.FoundationArms;
 
 import java.lang.Runnable;
 
@@ -17,15 +18,16 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name = "BlueAuto", group = "Autonomous")
 public class BlueAuto extends LinearOpMode {
 
-//    private Hardware hardware = new Hardware();
-//    private AutonomousTools robot = new AutonomousTools();
+    private Robot robot = new Robot();
+
 //
 //    private final double fricRatio = 0.9;
 
     public void runOpMode() throws InterruptedException {
 
-//        robot.initSensors(hardwareMap);
-//        hardware.init(hardwareMap, false);
+        robot.init(hardwareMap);
+
+
 //
 //
 //        waitForStart();
