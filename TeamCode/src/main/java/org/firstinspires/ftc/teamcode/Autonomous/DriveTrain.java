@@ -4,8 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware.RobotMotors;
+import org.firstinspires.ftc.teamcode.Hardware.RobotMotorsAuto;
 
-public class DriveTrain extends RobotMotors {
+public class DriveTrain extends RobotMotorsAuto {
 
     public DriveTrain(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight) {
         super(frontLeft, frontRight, backLeft, backRight);

@@ -4,8 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Hardware.RobotMotors;
+import org.firstinspires.ftc.teamcode.Hardware.RobotMotorsAuto;
 
-public class DriveTrainVel extends RobotMotors {
+public class DriveTrainVel extends RobotMotorsAuto {
     private final double MAX_VELOCITY = 1;
 
     public DriveTrainVel(DcMotor frontLeft, DcMotor frontRight, DcMotor backLeft, DcMotor backRight) {
@@ -27,8 +28,17 @@ public class DriveTrainVel extends RobotMotors {
             return;
         }
 
+        int dest = getTicks(inches);
+
         for (int i = 0; i < wheels.size(); i++) {
-            
+            ((DcMotorEx)wheels.get(i)).setVelocity(MAX_VELOCITY * power * dir[i]);
+        }
+
+        boolean isBusy = false;
+        while (!isBusy) {
+            for (int i = 0; i < wheels.size(); i++) {
+
+            }
         }
     }
 
