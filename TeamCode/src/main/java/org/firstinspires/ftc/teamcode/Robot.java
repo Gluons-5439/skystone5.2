@@ -29,13 +29,14 @@ public class Robot {
     private static final String VUFORIA_KEY = "AWaEPBn/////AAAAGWa1VK57tkUipP01PNk9ghbackLeftuxjK1Oh1pmbHuRnpaJI0vi57dpbnIkpee7J1pQ2RIivfEFrobqblxS3dKUjRo52NMJab6Me2Yhz7ejs5SDn4G5dheW5enRNWmRBsL1n+9ica/nVjG8xvGc1bOBRsIeZyL3EZ2tKSJ407BRgMwNOmaLPBle1jxqAE+eLSoYsz/FuC1GD8c4S3luDm9Utsy/dM1W4dw0hDJFc+lve9tBKGBX0ggj6lpo9GUrTC8t19YJg58jsIXO/DiF09a5jbackLeftTeB2LK+GndUDEGyZA1mS3yAR6aIBeDYnFw+79mVFIkTPk8wv3HIQfzoggCu0AwWJBVUVjkDxJOWfzCGjaHylZlo";
     BNO055IMU gyro;
 
-    double gsPreviousSpeed;
-    double gsPreviousXInches;
-    double gsPreviousYInches;
-    double gsPreviousTime;
+
+    double previousSpeed;
+    double previousXInches;
+    double previousYInches;
+    double previousTime;
 
     boolean gsFirstRun = true;
-    ElapsedTime gsSpeedTimer = new ElapsedTime();
+    ElapsedTime speedTimer = new ElapsedTime();
 
     public Robot() {
 
@@ -89,6 +90,14 @@ public class Robot {
         lift = new Lift(liftMotorL, liftMotorR);
         robotMotors = new RobotMotors(frontLeft,frontRight,backLeft,backRight);
 
+    }
+    public void waitForTick(long periodMs) throws InterruptedException {
+        long remaining = periodMs - (long) speedTimer.milliseconds();
+
+        if (remaining > 0)
+            Thread.sleep(remaining);
+
+        speedTimer.reset();
     }
 }
 
@@ -205,4 +214,4 @@ public class Robot {
 //        }
 //        driveTrain.setMotorPower(0, 0, 0, 0);
 //    }
-}
+//}

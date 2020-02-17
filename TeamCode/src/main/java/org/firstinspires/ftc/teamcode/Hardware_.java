@@ -123,7 +123,7 @@ public class Hardware_ {
         claw.setDirection(Servo.Direction.FORWARD);
         horizontal.setDirection(CRServo.Direction.FORWARD);
         flip.setDirection(Servo.Direction.FORWARD);
-        cap.setDirection(Servo.Direction.FORWARD);
+        kick.setDirection(Servo.Direction.FORWARD);
         cap.setDirection(Servo.Direction.FORWARD);
 
 
