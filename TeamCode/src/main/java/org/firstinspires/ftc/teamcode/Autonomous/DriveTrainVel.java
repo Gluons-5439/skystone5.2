@@ -34,10 +34,12 @@ public class DriveTrainVel extends RobotMotorsAuto {
             ((DcMotorEx)wheels.get(i)).setVelocity(MAX_VELOCITY * power * dir[i]);
         }
 
-        boolean isBusy = false;
-        while (!isBusy) {
+        boolean isBusy = true;
+        while (isBusy) {
             for (int i = 0; i < wheels.size(); i++) {
-
+                if (Math.abs(wheels.get(i).getCurrentPosition()) > dest) {
+                    isBusy = false;
+                }
             }
         }
     }

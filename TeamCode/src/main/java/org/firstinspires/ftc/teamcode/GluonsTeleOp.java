@@ -10,6 +10,7 @@
         import com.qualcomm.robotcore.hardware.DcMotorSimple;
         import com.qualcomm.robotcore.util.Range;
 
+        import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
         import org.firstinspires.ftc.teamcode.Autonomous.DriveTrain;
 
         @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Gluons TeleOp", group = "TeleOp")
@@ -18,8 +19,6 @@ public class GluonsTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap);
-
-
 
        //boolean rakeIsLowered = false; GAMER MOMENTS 2020
         //int rakeButtonCD = 0; GAMER MOMENTS 2020
@@ -48,36 +47,50 @@ public class GluonsTeleOp extends LinearOpMode {
 
             // DRIVE ====================================================                                                              Wheel vectors GAMER MOMENTS 2020
             //                                                                                                                      135 degrees  45 degrees GAMER MOMENTS 2020
-            double maxPower = 1;
-            double forward = Math.abs(gamepad1.left_stick_y) > 0.2 ? -gamepad1.left_stick_y : 0;
-            double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees GAMER MOMENTS 2020
-            double right = Math.abs(gamepad1.left_stick_x) > 0.2 ? gamepad1.left_stick_x : 0;
-            //Math for drive relative to theta
-            clockwise *= -1;
+//            double maxPower = 1;
+//            double forward = Math.abs(gamepad1.left_stick_y) > 0.2 ? -gamepad1.left_stick_y : 0;
+//            double clockwise = Math.abs(gamepad1.right_stick_x) > 0.2 ? -gamepad1.right_stick_x : 0;                                  // 45 degrees   135 degrees GAMER MOMENTS 2020
+//            double right = Math.abs(gamepad1.left_stick_x) > 0.2 ? gamepad1.left_stick_x : 0;
+//            //Math for drive relative to theta
+//            clockwise *= -1;
+//
+//            double fr = forward - clockwise + right;  //+
+//            double br = forward - clockwise - right;  //-
+//            double fl = forward + clockwise - right;  //-
+//            double bl = forward + clockwise + right;  //+
+//
+//            fl = Range.scale(fl, -1, 1, -maxPower, maxPower);
+//            fr = Range.scale(fr, -1, 1, -maxPower, maxPower);
+//            bl = Range.scale(bl, -1, 1, -maxPower, maxPower);
+//            br = Range.scale(br, -1, 1, -maxPower, maxPower);
+//            robot.robotMotors.setMotorPower(fl, fr, bl, br);
+//
+//
+//            // BUTTONS ================================================== GAMER MOMENTS 2020
+//
+//            // Gamepad 1 - Driver + Intake + Foundation Arms GAMER MOMENTS 2020
+//            if (slowModeButtonCD == 0 && gamepad1.back) {
+//                if (maxPower == 1) {
+//                    maxPower = .5;
+//                } else {
+//                    maxPower = 1;
+//                }
+//                slowModeButtonCD = 12;
+//            }
 
-            double fr = forward - clockwise + right;  //+
-            double br = forward - clockwise - right;  //-
-            double fl = forward + clockwise - right;  //-
-            double bl = forward + clockwise + right;  //+
+            double x = Math.pow(gamepad1.left_stick_x * -1, 3.0);
+            double y = Math.pow(gamepad1.left_stick_x * -1, 3.0);
 
-            fl = Range.scale(fl, -1, 1, -maxPower, maxPower);
-            fr = Range.scale(fr, -1, 1, -maxPower, maxPower);
-            bl = Range.scale(bl, -1, 1, -maxPower, maxPower);
-            br = Range.scale(br, -1, 1, -maxPower, maxPower);
-            robot.robotMotors.setMotorPower(fl, fr, bl, br);
+            final double rotation = Math.pow(gamepad1.right_stick_x*-1, 3.0)/1.5;
+            final double direction = Math.atan2(x, y) + robot.angles.firstAngle % (2.0 * Math.PI);
+            final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
+            final double lf = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+            final double rf = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+            final double lr = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+            final double rr = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
 
-            // BUTTONS ================================================== GAMER MOMENTS 2020
-
-            // Gamepad 1 - Driver + Intake + Foundation Arms GAMER MOMENTS 2020
-            if (slowModeButtonCD == 0 && gamepad1.back) {
-                if (maxPower == 1) {
-                    maxPower = .5;
-                } else {
-                    maxPower = 1;
-                }
-                slowModeButtonCD = 12;
-            }
+            robot.robotMotors.setMotorPower(lf, lr, rf, rr);
 
             if (gamepad1.right_trigger > 0.2) {
                 robot.intake.endocytosis();

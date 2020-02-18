@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 
 public class RobotMotors {
-    private DcMotor frontRight;     // Hub 3 Slot 0
+    private DcMotor frontRight;    // Hub 3 Slot 0
     private DcMotor frontLeft;     // Hub 2 Slot 0
     private DcMotor backRight;     // Hub 3 Slot 1
-    private DcMotor backLeft;     // Hub 2 Slot 1
+    private DcMotor backLeft;      // Hub 2 Slot 1
     protected ArrayList<DcMotor> wheels;
 
     protected MoveStyle direction;
@@ -48,10 +48,6 @@ public class RobotMotors {
         setMotorPower();
     }
 
-    public ArrayList<DcMotor> getWheels() {
-        return wheels;
-    }
-
     public void setMotorPower(double flpower, double frpower, double blpower, double brpower){
         frontLeft.setPower(flpower);
         frontRight.setPower(frpower);
@@ -84,6 +80,7 @@ public class RobotMotors {
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         setMotorPower();
     }
 }
